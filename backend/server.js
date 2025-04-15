@@ -14,13 +14,19 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: '*',
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['https://atletica-ads-unilago.onrender.com', 'https://ads-unilago.vercel.app']
+        : '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Servir arquivos estáticos apenas em desenvolvimento
+if (process.env.NODE_ENV !== 'production') {
+    app.use(express.static(path.join(__dirname, '../frontend')));
+}
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ads-unilago';
@@ -54,10 +60,13 @@ mongoose.connection.on('disconnected', () => {
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/')
+        const uploadDir = process.env.NODE_ENV === 'production' 
+            ? '/tmp/uploads'
+            : 'uploads/';
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname)
+        cb(null, Date.now() + '-' + file.originalname);
     }
 });
 
