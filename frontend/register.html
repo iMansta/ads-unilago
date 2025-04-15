@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlética ADS - Registro</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="../assets/atletica-logo-sem-fundo.png" alt="Logo Atlética ADS" class="logo">
+                <h1>Criar Conta</h1>
+                <p>Junte-se à Atlética de Análise e Desenvolvimento de Sistemas</p>
+            </div>
+            <form id="registerForm" class="login-form">
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="name" placeholder="Nome completo" required>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-graduation-cap"></i>
+                    <select id="course" required>
+                        <option value="">Selecione o curso</option>
+                        <option value="Análise e Desenvolvimento de Sistemas">Análise e Desenvolvimento de Sistemas</option>
+                        <option value="Agronomia">Agronomia</option>
+                        <option value="Biomedicina">Biomedicina</option>
+                        <option value="Educação Física - Bacharelado">Educação Física - Bacharelado</option>
+                        <option value="Educação Física - Licenciatura">Educação Física - Licenciatura</option>
+                        <option value="Enfermagem">Enfermagem</option>
+                        <option value="Engenharia Ambiental e Sanitária">Engenharia Ambiental e Sanitária</option>
+                        <option value="Engenharia Civil">Engenharia Civil</option>
+                        <option value="Engenharia da Computação">Engenharia da Computação</option>
+                        <option value="Engenharia de Alimentos">Engenharia de Alimentos</option>
+                        <option value="Engenharia de Produção">Engenharia de Produção</option>
+                        <option value="Engenharia Elétrica">Engenharia Elétrica</option>
+                        <option value="Engenharia Química">Engenharia Química</option>
+                        <option value="Estética e Cosmética">Estética e Cosmética</option>
+                        <option value="Farmácia">Farmácia</option>
+                        <option value="Gestão de Recursos Humanos">Gestão de Recursos Humanos</option>
+                        <option value="Letras - Português e Inglês - Licenciatura">Letras - Português e Inglês - Licenciatura</option>
+                        <option value="Letras (Tradutor e Intérprete) - Bacharelado">Letras (Tradutor e Intérprete) - Bacharelado</option>
+                        <option value="Medicina">Medicina</option>
+                        <option value="Medicina Veterinária">Medicina Veterinária</option>
+                        <option value="Nutrição">Nutrição</option>
+                        <option value="Odontologia">Odontologia</option>
+                        <option value="Produção Audiovisual">Produção Audiovisual</option>
+                        <option value="Psicologia">Psicologia</option>
+                        <option value="Radiologia">Radiologia</option>
+                        <option value="Serviço Social">Serviço Social</option>
+                        <option value="Sistemas de Informação">Sistemas de Informação</option>
+                        <option value="Zootecnia">Zootecnia</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-list-ol"></i>
+                    <select id="semester" required style="width: 100%; padding: 12px 40px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; transition: border-color 0.3s; background-color: #f0f2f5; appearance: none; -webkit-appearance: none; -moz-appearance: none; cursor: pointer;">
+                        <option value="">Selecione o semestre</option>
+                        <option value="1">1º Semestre</option>
+                        <option value="2">2º Semestre</option>
+                        <option value="3">3º Semestre</option>
+                        <option value="4">4º Semestre</option>
+                        <option value="5">5º Semestre</option>
+                        <option value="6">6º Semestre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Senha" required>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmPassword" placeholder="Confirmar senha" required>
+                </div>
+                <button type="submit" class="btn-login">Criar conta</button>
+                <div class="form-footer">
+                    <a href="index.html">Já tem uma conta? Faça login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/register.js"></script>
+</body>
+</html> 

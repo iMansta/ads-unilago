@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlética ADS - Feed</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/feed.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/atletica-logo-sem-fundo.png" alt="Logo Atlética ADS" class="logo">
+                <h2>Atlética ADS</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#"><i class="fas fa-home"></i> Feed</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-user-friends"></i> Amigos</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-users"></i> Grupos</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-book"></i> Páginas</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fas fa-calendar"></i> Eventos</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Pesquisar...">
+                </div>
+                <div class="user-menu">
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-profile" id="userProfile">
+                        <img src="assets/default-avatar.png" alt="Foto de perfil">
+                        <span class="user-name">Carregando...</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Feed Content -->
+            <div class="feed-container">
+                <!-- Create Post -->
+                <div class="create-post">
+                    <div class="post-input">
+                        <img src="assets/default-avatar.png" alt="Sua foto" class="user-avatar">
+                        <input type="text" placeholder="O que você está pensando?" id="postInput">
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action">
+                            <i class="fas fa-image"></i> Foto
+                        </button>
+                        <button class="post-action">
+                            <i class="fas fa-video"></i> Vídeo
+                        </button>
+                        <button class="post-action">
+                            <i class="fas fa-file"></i> Arquivo
+                        </button>
+                        <button class="post-submit" id="submitPost">Publicar</button>
+                    </div>
+                </div>
+
+                <!-- Posts Feed -->
+                <div class="posts-feed" id="postsFeed">
+                    <!-- Posts will be loaded here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="sidebar-section">
+                <h3>Amigos Online</h3>
+                <ul class="online-friends" id="onlineFriends">
+                    <li class="loading">Carregando amigos...</li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Grupos Populares</h3>
+                <ul class="popular-groups" id="popularGroups">
+                    <li class="loading">Carregando grupos...</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <script src="js/feed.js"></script>
+</body>
+</html> 

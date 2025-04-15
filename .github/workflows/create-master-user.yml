@@ -1,0 +1,43 @@
+name: Create Master User
+
+on:
+  workflow_dispatch:
+    inputs:
+      mongodb_uri:
+        description: 'MongoDB Connection URI'
+        required: true
+        type: string
+        default: 'mongodb://localhost:27017/ads-unilago'
+      jwt_secret:
+        description: 'JWT Secret'
+        required: true
+        type: string
+        default: 'your-secret-key'
+
+jobs:
+  create-master-user:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        cd backend
+        npm install
+        
+    - name: Create .env file
+      run: |
+        cd backend
+        echo "MONGODB_URI=${{ github.event.inputs.mongodb_uri }}" > .env
+        echo "JWT_SECRET=${{ github.event.inputs.jwt_secret }}" >> .env
+        
+    - name: Run create master user script
+      run: |
+        cd backend
+        node scripts/create-master-user.js 

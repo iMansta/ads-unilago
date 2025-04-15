@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Definição de gradientes -->
+    <defs>
+        <linearGradient id="dragonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0066FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0033CC;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="glowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00FFFF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0066FF;stop-opacity:0.5" />
+        </linearGradient>
+    </defs>
+
+    <!-- Círculo de fundo com gradiente -->
+    <circle cx="100" cy="100" r="90" fill="url(#dragonGradient)"/>
+    
+    <!-- Dragão Byte -->
+    <g transform="translate(40, 40)">
+        <!-- Corpo do dragão -->
+        <path d="M60 30 C70 20, 80 20, 90 30 C100 40, 100 50, 90 60 C80 70, 70 70, 60 60 C50 50, 50 40, 60 30" 
+              fill="url(#dragonGradient)"/>
+        
+        <!-- Asas -->
+        <path d="M60 40 C50 30, 40 20, 30 30 C20 40, 20 50, 30 60" 
+              stroke="#00FFFF" fill="none" stroke-width="2"/>
+        <path d="M90 40 C100 30, 110 20, 120 30 C130 40, 130 50, 120 60" 
+              stroke="#00FFFF" fill="none" stroke-width="2"/>
+        
+        <!-- Escamas em formato de código binário -->
+        <g class="binary-scales">
+            <!-- Primeira linha -->
+            <rect x="55" y="35" width="10" height="5" fill="#00FFFF"/>
+            <rect x="75" y="35" width="10" height="5" fill="#00FFFF"/>
+            <!-- Segunda linha -->
+            <rect x="65" y="45" width="10" height="5" fill="#00FFFF"/>
+            <rect x="85" y="45" width="10" height="5" fill="#00FFFF"/>
+            <!-- Terceira linha -->
+            <rect x="55" y="55" width="10" height="5" fill="#00FFFF"/>
+            <rect x="75" y="55" width="10" height="5" fill="#00FFFF"/>
+        </g>
+        
+        <!-- Olhos com brilho -->
+        <g class="eyes">
+            <!-- Olho esquerdo -->
+            <circle cx="70" cy="40" r="5" fill="#FFFFFF"/>
+            <circle cx="70" cy="40" r="2" fill="#000000"/>
+            <circle cx="69" cy="39" r="1" fill="#00FFFF"/>
+            <!-- Olho direito -->
+            <circle cx="80" cy="40" r="5" fill="#FFFFFF"/>
+            <circle cx="80" cy="40" r="2" fill="#000000"/>
+            <circle cx="79" cy="39" r="1" fill="#00FFFF"/>
+        </g>
+        
+        <!-- Chifres com efeito de brilho -->
+        <g class="horns">
+            <path d="M65 25 L60 15 L55 25" stroke="#00FFFF" fill="none" stroke-width="2"/>
+            <path d="M85 25 L90 15 L95 25" stroke="#00FFFF" fill="none" stroke-width="2"/>
+            <!-- Brilho dos chifres -->
+            <circle cx="60" cy="15" r="2" fill="#00FFFF" opacity="0.5"/>
+            <circle cx="90" cy="15" r="2" fill="#00FFFF" opacity="0.5"/>
+        </g>
+        
+        <!-- Cauda com efeito de código -->
+        <path d="M60 60 C50 70, 40 80, 30 90" 
+              stroke="#00FFFF" fill="none" stroke-width="2"/>
+        <rect x="25" y="85" width="10" height="5" fill="#00FFFF"/>
+        <rect x="35" y="75" width="10" height="5" fill="#00FFFF"/>
+    </g>
+    
+    <!-- Texto "ADS" com efeito de brilho -->
+    <g class="text-ads">
+        <text x="100" y="140" 
+              font-family="Arial Black, sans-serif" 
+              font-size="24" 
+              fill="#FFFFFF" 
+              text-anchor="middle"
+              filter="url(#glow)">
+            ADS
+        </text>
+    </g>
+    
+    <!-- Texto "ATLÉTICA" com efeito de brilho -->
+    <g class="text-atletica">
+        <text x="100" y="160" 
+              font-family="Arial, sans-serif" 
+              font-size="16" 
+              fill="#00FFFF" 
+              text-anchor="middle"
+              filter="url(#glow)">
+            ATLÉTICA
+        </text>
+    </g>
+    
+    <!-- Efeito de brilho -->
+    <filter id="glow">
+        <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+        <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+    </filter>
+</svg> 
