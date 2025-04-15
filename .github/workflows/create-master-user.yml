@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       mongodb_uri:
-        description: 'MongoDB Connection URI'
+        description: 'MongoDB Connection URI (mongodb+srv://...)'
         required: true
         type: string
-        default: 'mongodb://localhost:27017/ads-unilago'
+        default: 'mongodb+srv://admin:password@cluster0.xxxxx.mongodb.net/ads-unilago?retryWrites=true&w=majority'
       jwt_secret:
         description: 'JWT Secret'
         required: true
@@ -40,4 +40,6 @@ jobs:
     - name: Run create master user script
       run: |
         cd backend
-        node scripts/create-master-user.js 
+        node scripts/create-master-user.js
+      env:
+        NODE_OPTIONS: --max-old-space-size=4096 

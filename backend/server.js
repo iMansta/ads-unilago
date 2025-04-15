@@ -9,14 +9,39 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.static('uploads'));
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/ads-unilago', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ads-unilago';
+console.log('Connecting to MongoDB...');
+console.log('URI:', MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')); // Log URI without credentials
+
+mongoose.connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
+    socketTimeoutMS: 45000, // Increase socket timeout
+}).then(() => {
+    console.log('Connected to MongoDB successfully');
+}).catch(err => {
+    console.error('MongoDB connection error:', err);
+});
+
+// Handle connection events
+mongoose.connection.on('connected', () => {
+    console.log('Mongoose connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+    console.error('Mongoose connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.log('Mongoose disconnected');
 });
 
 // Multer configuration for file uploads
@@ -86,6 +111,21 @@ const auth = async (req, res, next) => {
         res.status(401).send({ error: 'Please authenticate.' });
     }
 };
+
+// Test route
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'API is working!' });
+});
+
+// User profile route
+app.get('/api/user/profile', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select('-password');
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user profile' });
+    }
+});
 
 // Routes
 // Auth routes
@@ -212,7 +252,8 @@ app.post('/api/friends/add/:id', auth, async (req, res) => {
     }
 });
 
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 }); 
