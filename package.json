@@ -1,0 +1,21 @@
+{
+  "name": "ads-unilago",
+  "version": "1.0.0",
+  "description": "Rede social da Atlética de ADS Unilago",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "install": "cd backend && npm install",
+    "dev": "cd backend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iMansta/ads-unilago.git"
+  },
+  "author": "ADS Unilago",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iMansta/ads-unilago/issues"
+  },
+  "homepage": "https://github.com/iMansta/ads-unilago#readme"
+} 

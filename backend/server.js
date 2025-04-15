@@ -4,7 +4,11 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
-require('dotenv').config();
+const dotenv = require('dotenv');
+const path = require('path');
+
+// Carregar variáveis de ambiente
+dotenv.config();
 
 const app = express();
 
@@ -15,7 +19,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-app.use(express.static('uploads'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ads-unilago';
@@ -25,6 +30,8 @@ console.log('URI:', MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')); // L
 mongoose.connect(MONGODB_URI, {
     serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
     socketTimeoutMS: 45000, // Increase socket timeout
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 }).then(() => {
     console.log('Connected to MongoDB successfully');
 }).catch(err => {
@@ -252,8 +259,31 @@ app.post('/api/friends/add/:id', auth, async (req, res) => {
     }
 });
 
+// Rota para servir o frontend
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+// Rota para servir as páginas do frontend
+app.get('/:page', (req, res) => {
+    const page = req.params.page;
+    res.sendFile(path.join(__dirname, `../frontend/${page}.html`));
+});
+
+// Middleware de tratamento de erros
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
+
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-}); 
+});
+
+module.exports = app; 

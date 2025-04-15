@@ -19,6 +19,9 @@ build/
 *.swo
 .DS_Store
 
+# Render specific
+.render-buildpacks/
+
 # Uploaded files
 uploads/
 public/uploads/

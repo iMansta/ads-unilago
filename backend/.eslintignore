@@ -1,0 +1,27 @@
+# Dependências
+node_modules/
+
+# Arquivos de build
+dist/
+build/
+
+# Arquivos de cobertura de testes
+coverage/
+
+# Arquivos de ambiente
+.env
+.env.*
+
+# Arquivos de log
+*.log
+
+# Arquivos de IDE
+.idea/
+.vscode/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de upload
+uploads/ 
