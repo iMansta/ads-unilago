@@ -154,45 +154,48 @@ async function loadPosts() {
 
 // Create post element
 function createPostElement(post) {
-    const postDiv = document.createElement('div');
-    postDiv.className = 'post';
-    postDiv.innerHTML = `
-        <div class="post-header">
-            <img src="${post.author.avatar || DEFAULT_AVATAR}" alt="${post.author.name}" class="user-avatar">
-            <div class="user-info">
-                <h3 class="user-name">${post.author.name}</h3>
-                <span class="post-time">${formatDate(post.createdAt)}</span>
+    if (!post || !post.author) {
+        console.error('Post ou autor inválido:', post);
+        return '';
+    }
+
+    const authorAvatar = post.author.avatar || DEFAULT_AVATAR;
+    const authorName = post.author.name || 'Usuário desconhecido';
+    const postContent = post.content || '';
+    const postImage = post.image ? `<img src="${post.image}" alt="Imagem do post" class="post-image">` : '';
+    const postVideo = post.video ? `<video src="${post.video}" controls class="post-video"></video>` : '';
+    const postAttachment = post.attachment ? `<a href="${post.attachment}" class="post-attachment" target="_blank">Anexo</a>` : '';
+
+    return `
+        <div class="post">
+            <div class="post-header">
+                <img src="${authorAvatar}" alt="${authorName}" class="user-avatar">
+                <div class="post-info">
+                    <h3 class="user-name">${authorName}</h3>
+                    <span class="post-time">${formatDate(post.createdAt)}</span>
+                </div>
+            </div>
+            <div class="post-content">
+                <p>${postContent}</p>
+                ${postImage}
+                ${postVideo}
+                ${postAttachment}
+            </div>
+            <div class="post-actions">
+                <button class="action-btn like-btn" data-post-id="${post._id}">
+                    <i class="fas fa-heart"></i>
+                    <span>${post.likes || 0}</span>
+                </button>
+                <button class="action-btn comment-btn" data-post-id="${post._id}">
+                    <i class="fas fa-comment"></i>
+                    <span>${post.comments?.length || 0}</span>
+                </button>
+                <button class="action-btn share-btn" data-post-id="${post._id}">
+                    <i class="fas fa-share"></i>
+                </button>
             </div>
         </div>
-        <div class="post-content">${post.content}</div>
-        ${post.image ? `<div class="post-image"><img src="${post.image}" alt="Post image"></div>` : ''}
-        <div class="post-actions">
-            <button class="post-action like-btn" data-post-id="${post._id}">
-                <i class="fas fa-heart"></i>
-                <span>${post.likes.length}</span>
-            </button>
-            <button class="post-action comment-btn" onclick="toggleComments('${post._id}')">
-                <i class="fas fa-comment"></i>
-                <span>${post.comments.length}</span>
-            </button>
-        </div>
-        <div class="comments-section" id="comments-${post._id}" style="display: none;">
-            <div class="comments-list"></div>
-            <form class="comment-form" onsubmit="addComment(event, '${post._id}')">
-                <input type="text" placeholder="Write a comment..." required>
-                <button type="submit">Post</button>
-            </form>
-        </div>
     `;
-    
-    // Setup like button
-    const likeBtn = postDiv.querySelector('.like-btn');
-    likeBtn.addEventListener('click', () => toggleLike(post._id));
-    
-    // Load comments
-    loadComments(post._id);
-    
-    return postDiv;
 }
 
 // Load comments for a post
@@ -317,7 +320,9 @@ async function loadOnlineFriends() {
 
         const response = await fetch(`${API_URL}/friends/online`, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
         });
         console.log('Resposta da API de amigos online:', response);
@@ -337,8 +342,8 @@ async function loadOnlineFriends() {
 
         friendsList.innerHTML = friends.map(friend => `
             <div class="friend-item">
-                <img src="${friend.avatar || `${AVATAR_URL}/default-avatar.svg`}" alt="${friend.name}">
-                <span>${friend.name}</span>
+                <img src="${friend.avatar || DEFAULT_AVATAR}" alt="${friend.name || 'Amigo'}" class="friend-avatar">
+                <span class="friend-name">${friend.name || 'Amigo'}</span>
             </div>
         `).join('');
     } catch (error) {
@@ -359,7 +364,9 @@ async function loadPopularGroups() {
 
         const response = await fetch(`${API_URL}/groups/popular`, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
         });
         console.log('Resposta da API de grupos populares:', response);
@@ -379,10 +386,10 @@ async function loadPopularGroups() {
 
         groupsList.innerHTML = groups.map(group => `
             <div class="group-item">
-                <img src="${group.courseEmblem || `${AVATAR_URL}/default-avatar.svg`}" alt="${group.name}">
+                <img src="${group.courseEmblem || DEFAULT_AVATAR}" alt="${group.name || 'Grupo'}" class="group-avatar">
                 <div class="group-info">
-                    <h4>${group.name}</h4>
-                    <p>${group.memberCount} membros</p>
+                    <h4 class="group-name">${group.name || 'Grupo'}</h4>
+                    <p class="group-members">${group.memberCount || 0} membros</p>
                 </div>
             </div>
         `).join('');
