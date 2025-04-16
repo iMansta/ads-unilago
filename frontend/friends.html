@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigos - Atlética ADS Unilago</title>
+    <link rel="stylesheet" href="styles/friends.css">
+    <link rel="stylesheet" href="styles/chat-popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/assets/atletica-logo.svg" alt="Logo Atlética" class="logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/feed.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Feed</span>
+                </a>
+                <a href="/friends.html" class="nav-item active">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Amigos</span>
+                </a>
+                <a href="/groups.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+                <a href="/events.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Eventos</span>
+                </a>
+                <a href="/profile.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Perfil</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Friends Header -->
+            <div class="friends-header">
+                <h1>Amigos</h1>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="friend-search" placeholder="Pesquisar amigos...">
+                </div>
+            </div>
+
+            <!-- Friends Content -->
+            <div class="friends-content">
+                <!-- Online Friends -->
+                <div class="friends-section">
+                    <h2>Amigos Online</h2>
+                    <div id="online-friends-list" class="friends-list">
+                        <!-- Amigos online serão carregados aqui -->
+                    </div>
+                </div>
+
+                <!-- All Friends -->
+                <div class="friends-section">
+                    <h2>Todos os Amigos</h2>
+                    <div id="all-friends-list" class="friends-list">
+                        <!-- Todos os amigos serão carregados aqui -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="sidebar-section">
+                <h3>Sugestões de Amigos</h3>
+                <div id="suggested-friends">
+                    <!-- Sugestões serão carregadas aqui -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/friends.js"></script>
+    <script src="js/components/ChatPopup.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

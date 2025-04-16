@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - Atlética ADS Unilago</title>
     <link rel="stylesheet" href="styles/profile.css">
+    <link rel="stylesheet" href="styles/chat-popup.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -43,12 +44,16 @@
             <!-- Profile Header -->
             <div class="profile-header">
                 <div class="cover-photo">
-                    <img src="/assets/default-cover.jpg" alt="Foto de capa">
+                    <img src="/assets/default-cover.jpg" alt="Foto de capa" id="cover-photo">
+                    <button class="edit-cover-btn" id="edit-cover-btn">
+                        <i class="fas fa-camera"></i>
+                        <span>Editar foto de capa</span>
+                    </button>
                 </div>
                 <div class="profile-info">
                     <div class="profile-avatar">
-                        <img src="/assets/default-avatar.svg" alt="Avatar" class="user-avatar">
-                        <button class="edit-avatar-btn">
+                        <img src="/assets/default-avatar.svg" alt="Avatar" id="profile-avatar" class="user-avatar">
+                        <button class="edit-avatar-btn" id="edit-avatar-btn">
                             <i class="fas fa-camera"></i>
                         </button>
                     </div>
@@ -69,16 +74,100 @@
                                 <span class="stat-label">Grupos</span>
                             </div>
                         </div>
+                        <div class="profile-actions">
+                            <button class="action-btn" id="edit-profile-btn">
+                                <i class="fas fa-edit"></i>
+                                <span>Editar Perfil</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Profile Content -->
             <div class="profile-content">
-                <div class="profile-posts">
-                    <h2>Meus Posts</h2>
-                    <div id="user-posts">
+                <!-- Profile Navigation -->
+                <nav class="profile-nav">
+                    <a href="#posts" class="nav-link active" data-tab="posts">Posts</a>
+                    <a href="#about" class="nav-link" data-tab="about">Sobre</a>
+                    <a href="#photos" class="nav-link" data-tab="photos">Fotos</a>
+                    <a href="#friends" class="nav-link" data-tab="friends">Amigos</a>
+                </nav>
+
+                <!-- Posts Section -->
+                <div class="tab-content active" id="posts-tab">
+                    <div class="create-post">
+                        <div class="post-input">
+                            <img src="/assets/default-avatar.svg" alt="Avatar" class="user-avatar" id="post-avatar">
+                            <div class="input-container">
+                                <textarea placeholder="O que você está pensando?" id="post-content"></textarea>
+                                <div class="post-actions">
+                                    <button class="action-btn">
+                                        <i class="fas fa-image"></i>
+                                        <span>Foto</span>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="fas fa-video"></i>
+                                        <span>Vídeo</span>
+                                    </button>
+                                    <button class="submit-post" id="submit-post">Publicar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="user-posts" class="posts-container">
                         <!-- Posts serão carregados aqui -->
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <div class="tab-content" id="about-tab">
+                    <div class="about-section">
+                        <h3>Informações Pessoais</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <div class="info-content">
+                                    <span class="info-label">Curso</span>
+                                    <span class="info-value" id="profile-course">ADS</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-calendar"></i>
+                                <div class="info-content">
+                                    <span class="info-label">Semestre</span>
+                                    <span class="info-value" id="profile-semester">3º</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-envelope"></i>
+                                <div class="info-content">
+                                    <span class="info-label">Email</span>
+                                    <span class="info-value" id="profile-email-about">email@exemplo.com</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <div class="info-content">
+                                    <span class="info-label">Telefone</span>
+                                    <span class="info-value" id="profile-phone">(00) 00000-0000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photos Section -->
+                <div class="tab-content" id="photos-tab">
+                    <div class="photos-grid" id="photos-container">
+                        <!-- Fotos serão carregadas aqui -->
+                    </div>
+                </div>
+
+                <!-- Friends Section -->
+                <div class="tab-content" id="friends-tab">
+                    <div class="friends-grid" id="friends-container">
+                        <!-- Amigos serão carregados aqui -->
                     </div>
                 </div>
             </div>
@@ -101,7 +190,40 @@
         </aside>
     </div>
 
+    <!-- Modal de Edição de Perfil -->
+    <div class="modal" id="edit-profile-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Perfil</h2>
+                <button class="close-modal" id="close-edit-modal">&times;</button>
+            </div>
+            <form id="edit-profile-form">
+                <div class="form-group">
+                    <label for="edit-name">Nome</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-course">Curso</label>
+                    <input type="text" id="edit-course" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-semester">Semestre</label>
+                    <input type="text" id="edit-semester" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-phone">Telefone</label>
+                    <input type="tel" id="edit-phone">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="js/config.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/components/ChatPopup.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html> 

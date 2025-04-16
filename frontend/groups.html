@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos - Atlética ADS Unilago</title>
+    <link rel="stylesheet" href="styles/feed.css">
+    <link rel="stylesheet" href="styles/groups.css">
+    <link rel="stylesheet" href="styles/chat-popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/assets/atletica-logo.svg" alt="Logo Atlética" class="logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/feed.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Feed</span>
+                </a>
+                <a href="/friends.html" class="nav-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Amigos</span>
+                </a>
+                <a href="/groups.html" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+                <a href="/events.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Eventos</span>
+                </a>
+                <a href="/profile.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Perfil</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Groups Header -->
+            <div class="groups-header">
+                <h1>Grupos</h1>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="group-search" placeholder="Pesquisar grupos...">
+                </div>
+                <button class="create-group-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>Criar Grupo</span>
+                </button>
+            </div>
+
+            <!-- Groups Content -->
+            <div class="groups-content">
+                <!-- My Groups -->
+                <div class="groups-section">
+                    <h2>Meus Grupos</h2>
+                    <div id="my-groups-list" class="groups-list">
+                        <!-- Meus grupos serão carregados aqui -->
+                    </div>
+                </div>
+
+                <!-- Popular Groups -->
+                <div class="groups-section">
+                    <h2>Grupos Populares</h2>
+                    <div id="popular-groups-list" class="groups-list">
+                        <!-- Grupos populares serão carregados aqui -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="sidebar-section">
+                <h3>Sugestões de Grupos</h3>
+                <div id="suggested-groups">
+                    <!-- Sugestões serão carregadas aqui -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Create Group Modal -->
+    <div id="create-group-modal" class="modal">
+        <div class="modal-content">
+            <h2>Criar Novo Grupo</h2>
+            <form id="create-group-form">
+                <div class="form-group">
+                    <label for="group-name">Nome do Grupo</label>
+                    <input type="text" id="group-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="group-description">Descrição</label>
+                    <textarea id="group-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="group-privacy">Privacidade</label>
+                    <select id="group-privacy" required>
+                        <option value="public">Público</option>
+                        <option value="private">Privado</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancelar</button>
+                    <button type="submit" class="submit-btn">Criar Grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/groups.js"></script>
+    <script src="js/components/ChatPopup.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 
