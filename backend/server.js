@@ -30,6 +30,7 @@ app.use('/frontend/assets', express.static(path.join(__dirname, '../frontend/ass
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     console.log('Headers:', req.headers);
+    console.log('Body:', req.body);
     next();
 });
 
@@ -38,7 +39,17 @@ app.use(updateLastActive);
 
 // Rota de teste
 app.get('/api/test', (req, res) => {
-    res.json({ message: 'API está funcionando!' });
+    console.log('Teste da API recebido');
+    res.json({ 
+        message: 'API está funcionando!',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development',
+        cors: {
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }
+    });
 });
 
 // Rotas da API
@@ -46,8 +57,12 @@ app.use('/api', routes);
 
 // Tratamento de erros
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ message: 'Erro interno do servidor' });
+    console.error('Erro na API:', err);
+    console.error('Stack:', err.stack);
+    res.status(500).json({ 
+        message: 'Erro interno do servidor',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
 });
 
 // Configuração do Mongoose
@@ -67,6 +82,8 @@ mongoose
         const PORT = process.env.PORT || 3000;
         app.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);
+            console.log('Ambiente:', process.env.NODE_ENV || 'development');
+            console.log('CORS configurado para:', '*');
         });
     })
     .catch(err => {
