@@ -1,8 +1,23 @@
 const config = {
-    apiUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3000/api'
-        : 'https://atletica-ads-unilago.onrender.com/api'
+    apiUrl: 'https://atletica-ads-unilago.onrender.com/api'
 };
 
 // Log para debug
-console.log('API URL:', config.apiUrl); 
+console.log('API URL:', config.apiUrl);
+
+// Função para testar a conexão com a API
+async function testApiConnection() {
+    try {
+        console.log('Testando conexão com a API...');
+        const response = await fetch(`${config.apiUrl}/test`);
+        const data = await response.json();
+        console.log('Resposta da API:', data);
+        return true;
+    } catch (error) {
+        console.error('Erro ao conectar com a API:', error);
+        return false;
+    }
+}
+
+// Testar a conexão quando a página carregar
+document.addEventListener('DOMContentLoaded', testApiConnection); 

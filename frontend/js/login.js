@@ -1,6 +1,13 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const loginForm = document.getElementById('loginForm');
-    const API_URL = 'http://localhost:3000/api';
+    const API_URL = config.apiUrl;
+
+    // Testar a conexão com a API
+    const isConnected = await testApiConnection();
+    if (!isConnected) {
+        showError('Não foi possível conectar com o servidor. Por favor, tente novamente mais tarde.');
+        return;
+    }
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -9,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('password').value;
 
         try {
+            console.log('Tentando fazer login...');
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
@@ -17,7 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email, password })
             });
 
+            console.log('Resposta do servidor:', response.status);
             const data = await response.json();
+            console.log('Dados da resposta:', data);
 
             if (response.ok) {
                 // Salvar token e dados do usuário
@@ -27,9 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Redirecionar para o feed
                 window.location.href = 'feed.html';
             } else {
-                showError(data.message);
+                showError(data.message || 'Erro ao fazer login');
             }
         } catch (error) {
+            console.error('Erro ao fazer login:', error);
             showError('Erro ao conectar com o servidor');
         }
     });

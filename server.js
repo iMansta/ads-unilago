@@ -133,7 +133,16 @@ const auth = async (req, res, next) => {
 
 // Test route
 app.get('/api/test', (req, res) => {
-    res.json({ message: 'API is working!' });
+    res.json({ 
+        message: 'API is working!',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV,
+        cors: {
+            origin: req.headers.origin || 'No origin',
+            method: req.method,
+            headers: req.headers
+        }
+    });
 });
 
 // User profile route
