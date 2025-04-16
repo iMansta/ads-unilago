@@ -1,5 +1,7 @@
 // Configuração da API
-const API_URL = 'https://atletica-ads-unilago.onrender.com/api';
+const API_URL = 'https://ads-unilago.onrender.com/api';
+const DEFAULT_AVATAR = 'https://ads-unilago.onrender.com/assets/default-avatar.png';
+const DEFAULT_GROUP = 'https://ads-unilago.onrender.com/assets/default-group.png';
 
 // Check authentication on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,7 +31,7 @@ async function loadUserProfile() {
         
         const user = await response.json();
         document.querySelector('.user-name').textContent = user.name;
-        document.querySelector('.user-avatar').src = user.avatar || 'assets/default-avatar.png';
+        document.querySelector('.user-avatar').src = user.avatar || DEFAULT_AVATAR;
     } catch (error) {
         console.error('Error loading profile:', error);
         showError('Failed to load user profile');
@@ -143,7 +145,7 @@ function createPostElement(post) {
     postDiv.className = 'post';
     postDiv.innerHTML = `
         <div class="post-header">
-            <img src="${post.author.avatar || 'assets/default-avatar.png'}" alt="${post.author.name}" class="user-avatar">
+            <img src="${post.author.avatar || DEFAULT_AVATAR}" alt="${post.author.name}" class="user-avatar">
             <div class="user-info">
                 <h3 class="user-name">${post.author.name}</h3>
                 <span class="post-time">${formatDate(post.createdAt)}</span>
@@ -210,7 +212,7 @@ function createCommentElement(comment) {
     const commentDiv = document.createElement('div');
     commentDiv.className = 'comment';
     commentDiv.innerHTML = `
-        <img src="${comment.author.avatar || '/assets/default-avatar.png'}" alt="${comment.author.name}" class="user-avatar">
+        <img src="${comment.author.avatar || DEFAULT_AVATAR}" alt="${comment.author.name}" class="user-avatar">
         <div class="comment-content">
             <h4>${comment.author.name}</h4>
             <p>${comment.content}</p>
