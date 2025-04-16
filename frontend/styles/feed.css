@@ -1,11 +1,13 @@
 /* App Container */
-.app-container {
+.feed-container {
     display: grid;
     grid-template-columns: 250px 1fr 300px;
-    min-height: 100vh;
-    background-color: #f0f2f5;
     gap: 20px;
     padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
 }
 
 /* Sidebar Styles */
@@ -14,15 +16,19 @@
     padding: 20px;
     border-right: 1px solid #e4e6eb;
     position: fixed;
+    left: 0;
+    top: 0;
     width: 250px;
     height: 100vh;
     overflow-y: auto;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
 .sidebar-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     margin-bottom: 30px;
     padding-bottom: 15px;
@@ -82,6 +88,7 @@
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-height: calc(100vh - 40px);
 }
 
 /* Header */
@@ -186,18 +193,12 @@
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.create-post:hover {
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
 }
 
 .post-input {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 15px;
-    margin-bottom: 15px;
 }
 
 .post-input .user-avatar {
@@ -207,68 +208,56 @@
     object-fit: cover;
 }
 
-.post-input input {
+.input-container {
     flex: 1;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background-color: #f0f2f5;
 }
 
-.post-input input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+.input-container textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 1px solid #e4e6eb;
+    border-radius: 8px;
+    resize: none;
+    margin-bottom: 10px;
 }
 
 .post-actions {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     align-items: center;
-    padding-top: 10px;
-    border-top: 1px solid #eee;
 }
 
-.post-action {
+.action-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #f0f2f5;
+    color: #65676b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #e4e6eb;
+}
+
+.submit-post {
+    margin-left: auto;
+    background: var(--atletica-gradient);
+    color: white;
     padding: 8px 16px;
     border: none;
-    border-radius: 20px;
-    background: transparent;
-    color: #666;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.post-action:hover {
-    background: #f0f2f5;
-    color: var(--primary-color);
-    transform: translateY(-2px);
-}
-
-.post-action i {
-    font-size: 18px;
-}
-
-.post-submit {
-    padding: 8px 24px;
-    border: none;
-    border-radius: 20px;
-    background: var(--primary-color);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.post-submit:hover {
-    background: var(--primary-dark);
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
-    transform: translateY(-2px);
+.submit-post:hover {
+    box-shadow: var(--atletica-glow);
 }
 
 /* Posts Feed */
@@ -293,15 +282,15 @@
 /* Right Sidebar */
 .right-sidebar {
     position: fixed;
-    right: 20px;
-    top: 20px;
+    right: 0;
+    top: 0;
     width: 300px;
-    height: calc(100vh - 40px);
-    overflow-y: auto;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: 100vh;
     padding: 20px;
+    background-color: white;
+    border-left: 1px solid #e4e6eb;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
 .sidebar-section {
@@ -428,4 +417,52 @@
     .search-bar {
         width: 200px;
     }
+}
+
+/* Messages */
+.message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+}
+
+.message.error {
+    background-color: #ff4444;
+}
+
+.message.success {
+    background-color: #00C851;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Loading States */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #65676b;
+}
+
+.error-message {
+    text-align: center;
+    padding: 20px;
+    color: #ff4444;
+    background-color: #ffebee;
+    border-radius: 8px;
+    margin: 10px 0;
 } 
