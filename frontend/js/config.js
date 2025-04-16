@@ -1,6 +1,6 @@
 const config = {
-    // URL de desenvolvimento local
-    apiUrl: 'http://localhost:5000/api'
+    // URL de produção
+    apiUrl: 'https://ads-unilago.onrender.com/api'
 };
 
 // Log para debug
