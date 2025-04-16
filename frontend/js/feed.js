@@ -1,5 +1,5 @@
 // Configurações
-const API_URL = 'https://ads-unilago.onrender.com/api';
+const API_URL = config.apiUrl;
 const token = localStorage.getItem('token');
 
 // Elementos do DOM
@@ -146,52 +146,42 @@ async function loadOnlineFriends() {
 // Carregar grupos populares
 async function loadPopularGroups() {
     try {
-        console.log('Iniciando carregamento de grupos populares...');
-        console.log('Token:', token ? 'Presente' : 'Ausente');
-        
+        console.log('Carregando grupos populares...');
         const response = await fetch(`${API_URL}/groups/popular`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
         
-        console.log('Status da resposta:', response.status);
-        
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Detalhes do erro:', errorData);
-            throw new Error(`Erro ao carregar grupos populares: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const groups = await response.json();
-        console.log('Grupos recebidos:', groups);
+        console.log('Grupos populares recebidos:', groups);
         
         if (!popularGroupsList) {
             console.error('Elemento popularGroupsList não encontrado');
             return;
         }
         
-        popularGroupsList.innerHTML = '';
-        
         if (!Array.isArray(groups) || groups.length === 0) {
-            popularGroupsList.innerHTML = '<p class="no-groups">Nenhum grupo popular</p>';
+            popularGroupsList.innerHTML = '<p class="no-groups">Nenhum grupo popular encontrado</p>';
             return;
         }
         
-        groups.forEach(group => {
-            if (group) {
-                const groupElement = document.createElement('div');
-                groupElement.className = 'group-item';
-                groupElement.innerHTML = `
-                    <img src="${group.courseEmblem || '/assets/default-group.svg'}" alt="Emblema" class="group-emblem" onerror="this.src='/assets/default-group.svg'">
-                    <div class="group-info">
-                        <span class="group-name">${group.name || 'Grupo sem nome'}</span>
-                        <span class="member-count">${group.memberCount || 0} membros</span>
-                    </div>
-                `;
-                popularGroupsList.appendChild(groupElement);
-            }
-        });
+        popularGroupsList.innerHTML = groups.map(group => `
+            <div class="group-card">
+                <img src="${group.courseEmblem || 'https://ads-unilago.onrender.com/assets/default-avatar.svg'}" 
+                     alt="${group.name}" 
+                     class="group-avatar"
+                     onerror="this.src='https://ads-unilago.onrender.com/assets/default-avatar.svg'">
+                <div class="group-info">
+                    <h4>${group.name}</h4>
+                    <p>${group.memberCount || 0} membros</p>
+                </div>
+            </div>
+        `).join('');
     } catch (error) {
         console.error('Erro ao carregar grupos populares:', error);
         if (popularGroupsList) {

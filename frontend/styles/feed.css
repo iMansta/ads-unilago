@@ -210,86 +210,81 @@ body {
     position: fixed;
     right: 20px;
     width: 300px;
+    height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.online-friends,
+.popular-groups {
     background-color: white;
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px;
+    margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-section {
-    margin-bottom: 20px;
-}
-
-.sidebar-section h3 {
-    margin-bottom: 15px;
+.online-friends h3,
+.popular-groups h3 {
+    font-size: 16px;
     color: #1c1e21;
-    font-size: 18px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4e6eb;
 }
 
-/* Amigos online */
-.friend-item {
+.friends-list,
+.groups-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.group-card {
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 10px;
     border-radius: 8px;
     transition: background-color 0.2s;
+    cursor: pointer;
 }
 
-.friend-item:hover {
+.group-card:hover {
     background-color: #f0f2f5;
 }
 
-.friend-item .user-avatar {
-    width: 32px;
-    height: 32px;
-}
-
-.friend-name {
-    margin-left: 10px;
-    font-size: 14px;
-}
-
-.online-status {
-    width: 8px;
-    height: 8px;
-    background-color: #31a24c;
-    border-radius: 50%;
-    margin-left: auto;
-}
-
-/* Grupos populares */
-.group-item {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border-radius: 8px;
-    transition: background-color 0.2s;
-}
-
-.group-item:hover {
-    background-color: #f0f2f5;
-}
-
-.group-emblem {
+.group-card img {
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    margin-right: 10px;
+    margin-right: 12px;
+    object-fit: cover;
 }
 
 .group-info {
-    display: flex;
-    flex-direction: column;
+    flex: 1;
 }
 
-.group-name {
-    font-weight: 600;
+.group-info h4 {
+    font-size: 14px;
+    color: #1c1e21;
+    margin-bottom: 4px;
+}
+
+.group-info p {
+    font-size: 12px;
+    color: #65676b;
+}
+
+.no-groups,
+.error-message {
+    text-align: center;
+    color: #65676b;
+    padding: 10px;
     font-size: 14px;
 }
 
-.member-count {
-    font-size: 12px;
-    color: #65676b;
+.error-message {
+    color: #dc3545;
 }
 
 /* Mensagens */
