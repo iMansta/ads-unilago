@@ -60,14 +60,12 @@ function createPostElement(post) {
     
     // Usar valores padrão caso as propriedades não existam
     const author = post.author || {};
-    const avatarUrl = author.avatar || '/assets/default-avatar.svg';
     const authorName = author.name || 'Usuário Desconhecido';
     const postTime = post.createdAt ? new Date(post.createdAt).toLocaleString() : 'Data desconhecida';
     const content = post.content || '';
     
     postElement.innerHTML = `
         <div class="post-header">
-            <img src="${avatarUrl}" alt="Avatar" class="user-avatar" onerror="this.src='/assets/default-avatar.svg'">
             <div class="post-info">
                 <span class="user-name">${authorName}</span>
                 <span class="post-time">${postTime}</span>
