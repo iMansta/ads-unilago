@@ -26,6 +26,12 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/frontend/assets', express.static(path.join(__dirname, '../frontend/assets')));
 
+// Middleware para log de requisições
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
+
 // Middleware para atualizar lastActive
 app.use(updateLastActive);
 
