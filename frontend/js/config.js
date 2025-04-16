@@ -1,5 +1,6 @@
 const config = {
-    apiUrl: 'https://atletica-ads-unilago.onrender.com/api'
+    // URL de produção
+    apiUrl: 'https://ads-unilago.onrender.com/api'
 };
 
 // Log para debug
