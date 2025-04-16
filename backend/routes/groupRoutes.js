@@ -43,7 +43,7 @@ router.get('/', (req, res) => {
 });
 
 // Obter grupos populares
-router.get('/popular', auth, async (req, res) => {
+router.get('/popular', async (req, res) => {
     try {
         console.log('Recebida requisição para /groups/popular');
         console.log('Token do usuário:', req.user);

@@ -128,7 +128,7 @@ async function loadOnlineFriends() {
                 const friendElement = document.createElement('div');
                 friendElement.className = 'friend-item';
                 friendElement.innerHTML = `
-                    <img src="${friend.avatar || '/assets/default-avatar.png'}" alt="Avatar" class="user-avatar" onerror="this.src='/assets/default-avatar.png'">
+                    <img src="${friend.avatar || '/assets/default-avatar.svg'}" alt="Avatar" class="user-avatar" onerror="this.src='/assets/default-avatar.svg'">
                     <span class="friend-name">${friend.name || 'Usuário Desconhecido'}</span>
                     <span class="online-status"></span>
                 `;
@@ -146,17 +146,25 @@ async function loadOnlineFriends() {
 // Carregar grupos populares
 async function loadPopularGroups() {
     try {
+        console.log('Iniciando carregamento de grupos populares...');
+        console.log('Token:', token ? 'Presente' : 'Ausente');
+        
         const response = await fetch(`${API_URL}/groups/popular`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
         
+        console.log('Status da resposta:', response.status);
+        
         if (!response.ok) {
-            throw new Error('Erro ao carregar grupos populares');
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Detalhes do erro:', errorData);
+            throw new Error(`Erro ao carregar grupos populares: ${response.status}`);
         }
         
         const groups = await response.json();
+        console.log('Grupos recebidos:', groups);
         
         if (!popularGroupsList) {
             console.error('Elemento popularGroupsList não encontrado');
@@ -175,7 +183,7 @@ async function loadPopularGroups() {
                 const groupElement = document.createElement('div');
                 groupElement.className = 'group-item';
                 groupElement.innerHTML = `
-                    <img src="${group.courseEmblem || '/assets/default-group.png'}" alt="Emblema" class="group-emblem" onerror="this.src='/assets/default-group.png'">
+                    <img src="${group.courseEmblem || '/assets/default-group.svg'}" alt="Emblema" class="group-emblem" onerror="this.src='/assets/default-group.svg'">
                     <div class="group-info">
                         <span class="group-name">${group.name || 'Grupo sem nome'}</span>
                         <span class="member-count">${group.memberCount || 0} membros</span>
