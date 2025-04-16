@@ -18,7 +18,7 @@ const app = express();
 // Middleware
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://atletica-ads-unilago.onrender.com', 'https://ads-unilago.vercel.app']
+        ? ['https://atletica-ads-unilago.onrender.com', 'https://atletica-ads-unilago-frontend.onrender.com', 'https://ads-unilago.vercel.app']
         : '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
