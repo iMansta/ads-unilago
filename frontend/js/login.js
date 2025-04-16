@@ -1,10 +1,16 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const loginForm = document.getElementById('loginForm');
-    const API_URL = config.apiUrl;
+    // Usar a URL da API diretamente para evitar problemas de cache
+    const API_URL = 'https://ads-unilago.onrender.com/api';
 
     // Testar a conexão com a API
-    const isConnected = await testApiConnection();
-    if (!isConnected) {
+    try {
+        const response = await fetch(`${API_URL}/test`);
+        const data = await response.json();
+        console.log('Resposta da API:', data);
+        console.log('Conexão com a API estabelecida com sucesso!');
+    } catch (error) {
+        console.error('Erro ao conectar com a API:', error);
         showError('Não foi possível conectar com o servidor. Por favor, tente novamente mais tarde.');
         return;
     }
@@ -30,41 +36,51 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('Dados da resposta:', data);
 
             if (response.ok) {
-                // Salvar token e dados do usuário
+                console.log('Login realizado com sucesso!');
+                // Salvar o token no localStorage
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
-
-                // Redirecionar para o feed
+                // Redirecionar para a página principal
                 window.location.href = 'feed.html';
             } else {
+                console.error('Erro no login:', data.message);
                 showError(data.message || 'Erro ao fazer login');
             }
         } catch (error) {
             console.error('Erro ao fazer login:', error);
-            showError('Erro ao conectar com o servidor');
+            showError('Erro ao conectar com o servidor. Por favor, tente novamente mais tarde.');
         }
     });
 
     function showError(message) {
-        // Remove any existing error message
-        const existingError = document.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
+        console.error('Erro:', message);
+        showMessage(message, 'error');
+    }
+
+    function showMessage(message, type) {
+        // Remove any existing message
+        const existingMessage = document.querySelector('.message');
+        if (existingMessage) {
+            existingMessage.remove();
         }
 
-        // Create and show new error message
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.style.color = 'var(--error-color)';
-        errorDiv.style.textAlign = 'center';
-        errorDiv.style.marginTop = '10px';
-        errorDiv.textContent = message;
+        // Create and show new message
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message`;
+        messageDiv.style.color = type === 'error' ? 'var(--error-color)' : 'var(--success-color)';
+        messageDiv.style.textAlign = 'center';
+        messageDiv.style.marginTop = '10px';
+        messageDiv.style.padding = '10px';
+        messageDiv.style.borderRadius = '4px';
+        messageDiv.style.backgroundColor = type === 'error' ? 'rgba(255, 0, 0, 0.1)' : 'rgba(0, 255, 0, 0.1)';
+        messageDiv.textContent = message;
 
-        loginForm.insertBefore(errorDiv, loginForm.querySelector('.form-footer'));
+        loginForm.insertBefore(messageDiv, loginForm.querySelector('.form-footer'));
 
-        // Remove error message after 3 seconds
-        setTimeout(() => {
-            errorDiv.remove();
-        }, 3000);
+        // Remove message after 3 seconds if it's an error
+        if (type === 'error') {
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 3000);
+        }
     }
 }); 
