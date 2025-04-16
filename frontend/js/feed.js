@@ -6,8 +6,7 @@ const token = localStorage.getItem('token');
 const postInput = document.querySelector('.create-post textarea');
 const submitPostBtn = document.querySelector('.submit-post');
 const postsContainer = document.getElementById('posts-container');
-const onlineFriendsList = document.getElementById('online-friends-list');
-const popularGroupsList = document.getElementById('popular-groups-list');
+const onlineMembersList = document.getElementById('online-members-list');
 
 // Função auxiliar para mostrar mensagens
 function showMessage(message, type = 'error') {
@@ -94,96 +93,54 @@ function createPostElement(post) {
     return postElement;
 }
 
-// Carregar amigos online
-async function loadOnlineFriends() {
+// Carregar membros online
+async function loadOnlineMembers() {
     try {
-        const response = await fetch(`${API_URL}/friends/online`, {
+        const response = await fetch(`${API_URL}/users/online`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
         
         if (!response.ok) {
-            throw new Error('Erro ao carregar amigos online');
+            throw new Error('Erro ao carregar membros online');
         }
         
-        const friends = await response.json();
+        const members = await response.json();
         
-        if (!onlineFriendsList) {
-            console.error('Elemento onlineFriendsList não encontrado');
+        if (!onlineMembersList) {
+            console.error('Elemento onlineMembersList não encontrado');
             return;
         }
         
-        onlineFriendsList.innerHTML = '';
+        onlineMembersList.innerHTML = '';
         
-        if (!Array.isArray(friends) || friends.length === 0) {
-            onlineFriendsList.innerHTML = '<p class="no-friends">Nenhum amigo online</p>';
+        if (!Array.isArray(members) || members.length === 0) {
+            onlineMembersList.innerHTML = '<p class="no-members">Nenhum membro online</p>';
             return;
         }
         
-        friends.forEach(friend => {
-            if (friend) {
-                const friendElement = document.createElement('div');
-                friendElement.className = 'friend-item';
-                friendElement.innerHTML = `
-                    <img src="${friend.avatar || '/assets/default-avatar.svg'}" alt="Avatar" class="user-avatar" onerror="this.src='/assets/default-avatar.svg'">
-                    <span class="friend-name">${friend.name || 'Usuário Desconhecido'}</span>
-                    <span class="online-status"></span>
+        members.forEach(member => {
+            if (member) {
+                const memberElement = document.createElement('div');
+                memberElement.className = 'member-item';
+                memberElement.innerHTML = `
+                    <img src="${member.avatar || 'https://ads-unilago.onrender.com/assets/default-avatar.svg'}" 
+                         alt="Avatar" 
+                         class="member-avatar"
+                         onerror="this.src='https://ads-unilago.onrender.com/assets/default-avatar.svg'">
+                    <div class="member-info">
+                        <span class="member-name">${member.name || 'Usuário Desconhecido'}</span>
+                        <span class="member-status">Online</span>
+                    </div>
                 `;
-                onlineFriendsList.appendChild(friendElement);
+                onlineMembersList.appendChild(memberElement);
             }
         });
     } catch (error) {
-        console.error('Erro ao carregar amigos online:', error);
-        if (onlineFriendsList) {
-            onlineFriendsList.innerHTML = '<p class="error-message">Erro ao carregar amigos online</p>';
-        }
-    }
-}
-
-// Carregar grupos populares
-async function loadPopularGroups() {
-    try {
-        console.log('Carregando grupos populares...');
-        const response = await fetch(`${API_URL}/groups/popular`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const groups = await response.json();
-        console.log('Grupos populares recebidos:', groups);
-        
-        if (!popularGroupsList) {
-            console.error('Elemento popularGroupsList não encontrado');
-            return;
-        }
-        
-        if (!Array.isArray(groups) || groups.length === 0) {
-            popularGroupsList.innerHTML = '<p class="no-groups">Nenhum grupo popular encontrado</p>';
-            return;
-        }
-        
-        popularGroupsList.innerHTML = groups.map(group => `
-            <div class="group-card">
-                <img src="${group.courseEmblem || 'https://ads-unilago.onrender.com/assets/default-avatar.svg'}" 
-                     alt="${group.name}" 
-                     class="group-avatar"
-                     onerror="this.src='https://ads-unilago.onrender.com/assets/default-avatar.svg'">
-                <div class="group-info">
-                    <h4>${group.name}</h4>
-                    <p>${group.memberCount || 0} membros</p>
-                </div>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Erro ao carregar grupos populares:', error);
-        if (popularGroupsList) {
-            popularGroupsList.innerHTML = '<p class="error-message">Erro ao carregar grupos populares</p>';
+        console.error('Erro ao carregar membros online:', error);
+        if (onlineMembersList) {
+            onlineMembersList.innerHTML = '<p class="error-message">Erro ao carregar membros online</p>';
         }
     }
 }
@@ -196,8 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     loadPosts();
-    loadOnlineFriends();
-    loadPopularGroups();
+    loadOnlineMembers();
 });
 
 // Evento de envio de post

@@ -208,8 +208,7 @@ body {
     overflow-y: auto;
 }
 
-.online-friends,
-.popular-groups {
+.online-members {
     background-color: white;
     border-radius: 10px;
     padding: 15px;
@@ -217,8 +216,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.online-friends h3,
-.popular-groups h3 {
+.online-members h3 {
     font-size: 16px;
     color: #1c1e21;
     margin-bottom: 15px;
@@ -226,51 +224,62 @@ body {
     border-bottom: 1px solid #e4e6eb;
 }
 
-.friends-list,
-.groups-list {
+.members-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
-.group-card {
+.member-item {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 8px;
     border-radius: 8px;
     transition: background-color 0.2s;
     cursor: pointer;
 }
 
-.group-card:hover {
+.member-item:hover {
     background-color: #f0f2f5;
 }
 
-.group-card img {
+.member-avatar {
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: 50%;
     margin-right: 12px;
     object-fit: cover;
+    border: 2px solid #31a24c;
 }
 
-.group-info {
+.member-info {
     flex: 1;
 }
 
-.group-info h4 {
+.member-name {
     font-size: 14px;
     color: #1c1e21;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
-.group-info p {
+.member-status {
     font-size: 12px;
-    color: #65676b;
+    color: #31a24c;
+    display: flex;
+    align-items: center;
 }
 
-.no-groups,
-.error-message {
+.member-status::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #31a24c;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.no-members {
     text-align: center;
     color: #65676b;
     padding: 10px;
@@ -278,7 +287,10 @@ body {
 }
 
 .error-message {
+    text-align: center;
     color: #dc3545;
+    padding: 10px;
+    font-size: 14px;
 }
 
 /* Mensagens */
