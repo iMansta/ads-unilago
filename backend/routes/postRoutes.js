@@ -12,14 +12,15 @@ router.get('/:id', postController.getPost);
 router.use(auth);
 
 // Criar um novo post
-router.post('/', upload.fields([
-  { name: 'images', maxCount: 5 },
-  { name: 'videos', maxCount: 2 },
-  { name: 'attachments', maxCount: 3 }
-]), postController.createPost);
-
-// Buscar posts do feed
-router.get('/feed', postController.getFeedPosts);
+router.post(
+    '/',
+    upload.fields([
+        { name: 'images', maxCount: 5 },
+        { name: 'videos', maxCount: 2 },
+        { name: 'attachments', maxCount: 3 },
+    ]),
+    postController.createPost
+);
 
 // Curtir/descurtir um post
 router.post('/:id/like', postController.toggleLike);
@@ -33,4 +34,4 @@ router.delete('/:id', postController.deletePost);
 // Atualizar um post
 router.put('/:id', postController.updatePost);
 
-module.exports = router; 
+module.exports = router;

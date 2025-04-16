@@ -2,6 +2,36 @@ const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 const { validationResult } = require('express-validator');
 
+// @desc    Obter todos os comentários
+// @route   GET /api/comments
+// @access  Public
+exports.getAllComments = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const comments = await Comment.find()
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .populate('author', 'name avatar')
+            .populate('post', 'title');
+
+        const total = await Comment.countDocuments();
+
+        res.json({
+            comments,
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+            totalComments: total,
+        });
+    } catch (error) {
+        console.error('Erro ao buscar comentários:', error);
+        res.status(500).json({ message: 'Erro ao buscar comentários' });
+    }
+};
+
 // @desc    Criar um novo comentário
 // @route   POST /api/comments
 // @access  Private
@@ -25,7 +55,7 @@ exports.createComment = async (req, res) => {
         const comment = new Comment({
             content,
             author: userId,
-            post: postId
+            post: postId,
         });
 
         await comment.save();
@@ -62,7 +92,7 @@ exports.getPostComments = async (req, res) => {
             comments,
             currentPage: page,
             totalPages: Math.ceil(total / limit),
-            totalComments: total
+            totalComments: total,
         });
     } catch (error) {
         console.error('Erro ao buscar comentários:', error);
@@ -161,4 +191,4 @@ exports.toggleLike = async (req, res) => {
         console.error('Erro ao curtir/descurtir comentário:', error);
         res.status(500).json({ message: 'Erro ao curtir/descurtir comentário' });
     }
-}; 
+};

@@ -297,7 +297,7 @@ async function loadOnlineFriends() {
     friendsList.innerHTML = '<div class="loading">Loading friends...</div>';
     
     try {
-        const response = await fetch('/api/friends/online', {
+        const response = await fetch(`${API_URL}/friends/online`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -317,7 +317,7 @@ async function loadOnlineFriends() {
             const friendItem = document.createElement('li');
             friendItem.className = 'friend-item';
             friendItem.innerHTML = `
-                <img src="${friend.avatar || '/assets/default-avatar.png'}" alt="${friend.name}" class="user-avatar">
+                <img src="${friend.avatar || DEFAULT_AVATAR}" alt="${friend.name}" class="user-avatar">
                 <span>${friend.name}</span>
                 <span class="online-indicator"></span>
             `;
@@ -335,7 +335,7 @@ async function loadPopularGroups() {
     groupsList.innerHTML = '<div class="loading">Loading groups...</div>';
     
     try {
-        const response = await fetch('/api/groups/popular', {
+        const response = await fetch(`${API_URL}/groups/popular`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -394,4 +394,37 @@ function showError(message) {
     setTimeout(() => {
         errorDiv.remove();
     }, 3000);
+}
+
+// Handle post creation
+async function handlePostCreation(e) {
+    e.preventDefault();
+    
+    const postInput = document.querySelector('.post-input');
+    const postText = postInput.value.trim();
+    
+    if (!postText) {
+        showError('O post não pode estar vazio');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/posts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({ text: postText })
+        });
+        
+        if (!response.ok) throw new Error('Failed to create post');
+        
+        const newPost = await response.json();
+        loadPosts(); // Recarregar posts
+        postInput.value = ''; // Limpar input
+    } catch (error) {
+        console.error('Error creating post:', error);
+        showError('Failed to create post');
+    }
 } 

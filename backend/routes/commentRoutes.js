@@ -4,6 +4,11 @@ const { check } = require('express-validator');
 const auth = require('../middleware/auth');
 const commentController = require('../controllers/commentController');
 
+// @route   GET /api/comments
+// @desc    Obter todos os comentários
+// @access  Public
+router.get('/', commentController.getAllComments);
+
 // @route   POST /api/comments
 // @desc    Criar um novo comentário
 // @access  Private
@@ -22,8 +27,8 @@ router.post(
                 .not()
                 .isEmpty()
                 .isMongoId()
-                .withMessage('ID do post inválido')
-        ]
+                .withMessage('ID do post inválido'),
+        ],
     ],
     commentController.createComment
 );
@@ -33,10 +38,7 @@ router.post(
 // @access  Public
 router.get(
     '/post/:postId',
-    [
-        check('postId', 'ID do post inválido')
-            .isMongoId()
-    ],
+    [check('postId', 'ID do post inválido').isMongoId()],
     commentController.getPostComments
 );
 
@@ -54,9 +56,8 @@ router.put(
                 .trim()
                 .isLength({ max: 1000 })
                 .withMessage('O comentário não pode ter mais de 1000 caracteres'),
-            check('commentId', 'ID do comentário inválido')
-                .isMongoId()
-        ]
+            check('commentId', 'ID do comentário inválido').isMongoId(),
+        ],
     ],
     commentController.updateComment
 );
@@ -66,11 +67,7 @@ router.put(
 // @access  Private
 router.delete(
     '/:commentId',
-    [
-        auth,
-        check('commentId', 'ID do comentário inválido')
-            .isMongoId()
-    ],
+    [auth, check('commentId', 'ID do comentário inválido').isMongoId()],
     commentController.deleteComment
 );
 
@@ -79,12 +76,8 @@ router.delete(
 // @access  Private
 router.post(
     '/:commentId/like',
-    [
-        auth,
-        check('commentId', 'ID do comentário inválido')
-            .isMongoId()
-    ],
+    [auth, check('commentId', 'ID do comentário inválido').isMongoId()],
     commentController.toggleLike
 );
 
-module.exports = router; 
+module.exports = router;

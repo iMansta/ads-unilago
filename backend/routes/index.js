@@ -4,6 +4,9 @@ const authRoutes = require('./authRoutes');
 const userRoutes = require('./userRoutes');
 const postRoutes = require('./postRoutes');
 const commentRoutes = require('./commentRoutes');
+const groupRoutes = require('./groupRoutes');
+const eventRoutes = require('./eventRoutes');
+const friendRoutes = require('./friendRoutes');
 
 // Rotas de autenticação
 router.use('/auth', authRoutes);
@@ -17,4 +20,13 @@ router.use('/posts', postRoutes);
 // Rotas de comentários
 router.use('/comments', commentRoutes);
 
-module.exports = router; 
+// Rotas de grupos
+router.use('/groups', groupRoutes);
+
+// Rotas de eventos
+router.use('/events', eventRoutes);
+
+// Rotas de amigos
+router.use('/friends', friendRoutes);
+
+module.exports = router;
