@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log('Registro realizado com sucesso!');
                 showSuccess('Registro realizado com sucesso! Redirecionando...');
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                 }, 1500);
             } else {
                 console.error('Erro no registro:', data.message);
