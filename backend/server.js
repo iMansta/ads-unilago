@@ -22,7 +22,7 @@ app.use(
 app.use(express.json());
 
 // Middleware para servir arquivos estáticos
-app.use('/assets', express.static(path.join(__dirname, '../assets')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/frontend/assets', express.static(path.join(__dirname, '../frontend/assets')));
 

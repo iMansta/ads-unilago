@@ -1,7 +1,8 @@
 // Configuração da API
 const API_URL = 'https://ads-unilago.onrender.com/api';
-const DEFAULT_AVATAR = 'https://ads-unilago.onrender.com/assets/default-avatar.png';
-const DEFAULT_GROUP = 'https://ads-unilago.onrender.com/assets/default-group.png';
+const AVATAR_URL = 'https://ads-unilago.onrender.com/assets';
+const DEFAULT_AVATAR = `${AVATAR_URL}/default-avatar.svg`;
+const DEFAULT_GROUP = `${AVATAR_URL}/default-avatar.svg`;
 
 // Check authentication on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -336,7 +337,7 @@ async function loadOnlineFriends() {
 
         friendsList.innerHTML = friends.map(friend => `
             <div class="friend-item">
-                <img src="${friend.avatar || '/assets/default-avatar.png'}" alt="${friend.name}">
+                <img src="${friend.avatar || `${AVATAR_URL}/default-avatar.svg`}" alt="${friend.name}">
                 <span>${friend.name}</span>
             </div>
         `).join('');
@@ -378,7 +379,7 @@ async function loadPopularGroups() {
 
         groupsList.innerHTML = groups.map(group => `
             <div class="group-item">
-                <img src="${group.courseEmblem || '/assets/default-group.png'}" alt="${group.name}">
+                <img src="${group.courseEmblem || `${AVATAR_URL}/default-avatar.svg`}" alt="${group.name}">
                 <div class="group-info">
                     <h4>${group.name}</h4>
                     <p>${group.memberCount} membros</p>
