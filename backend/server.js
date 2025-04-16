@@ -11,7 +11,7 @@ const app = express();
 // Configuração do CORS
 app.use(
     cors({
-        origin: ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'],
+        origin: '*', // Permitir todas as origens
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
@@ -29,6 +29,7 @@ app.use('/frontend/assets', express.static(path.join(__dirname, '../frontend/ass
 // Middleware para log de requisições
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    console.log('Headers:', req.headers);
     next();
 });
 
