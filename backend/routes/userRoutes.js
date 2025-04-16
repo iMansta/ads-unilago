@@ -15,7 +15,7 @@ router.get('/profile', (req, res) => {
             _id: '1',
             name: 'Usuário Teste',
             email: 'usuario@teste.com',
-            avatar: 'https://ads-unilago.onrender.com/assets/default-avatar.png',
+            avatar: 'https://ads-unilago.onrender.com/assets/default-avatar.svg',
             course: 'Análise e Desenvolvimento de Sistemas',
             courseEmblem: 'ADS',
             semester: 5,

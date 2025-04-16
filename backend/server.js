@@ -96,4 +96,13 @@ mongoose
         });
     });
 
+const userSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    avatar: { type: String, default: 'https://ads-unilago.onrender.com/assets/default-avatar.svg' },
+    role: { type: String, default: 'user' },
+    createdAt: { type: Date, default: Date.now }
+});
+
 module.exports = app;

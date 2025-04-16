@@ -25,8 +25,9 @@ async function createTestUser() {
             password: '123456',
             course: 'Análise e Desenvolvimento de Sistemas',
             registration: '2023001',
-            avatar: 'https://ads-unilago.onrender.com/assets/default-avatar.png',
+            avatar: 'https://ads-unilago.onrender.com/assets/default-avatar.svg',
             bio: 'Usuário de teste para desenvolvimento',
+            role: 'user'
         });
 
         await testUser.save();

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Atlética ADS Unilago</title>
+    <link rel="stylesheet" href="styles/feed.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/assets/atletica-logo.svg" alt="Logo Atlética" class="logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/feed.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Feed</span>
+                </a>
+                <a href="/friends.html" class="nav-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Amigos</span>
+                </a>
+                <a href="/groups.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+                <a href="/events.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Eventos</span>
+                </a>
+                <a href="/profile.html" class="nav-item active">
+                    <i class="fas fa-user"></i>
+                    <span>Perfil</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="cover-photo">
+                    <img src="/assets/default-cover.jpg" alt="Foto de capa">
+                </div>
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <img src="/assets/default-avatar.svg" alt="Avatar" class="user-avatar">
+                        <button class="edit-avatar-btn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div class="profile-details">
+                        <h1 id="profile-name">Carregando...</h1>
+                        <p id="profile-email">Carregando...</p>
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <span class="stat-value" id="post-count">0</span>
+                                <span class="stat-label">Posts</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="friend-count">0</span>
+                                <span class="stat-label">Amigos</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="group-count">0</span>
+                                <span class="stat-label">Grupos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <div class="profile-posts">
+                    <h2>Meus Posts</h2>
+                    <div id="user-posts">
+                        <!-- Posts serão carregados aqui -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="sidebar-section">
+                <h3>Informações</h3>
+                <div id="profile-info">
+                    <!-- Informações serão carregadas aqui -->
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <h3>Grupos</h3>
+                <div id="user-groups">
+                    <!-- Grupos serão carregados aqui -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html> 

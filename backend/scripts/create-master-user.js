@@ -34,7 +34,9 @@ const userSchema = new mongoose.Schema({
     course: { type: String, required: true },
     semester: { type: Number, required: true },
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    avatar: { type: String, default: 'https://ads-unilago.onrender.com/assets/default-avatar.svg' },
+    role: { type: String, required: true }
 });
 
 const User = mongoose.model('User', userSchema);
@@ -63,7 +65,9 @@ async function createMasterUser() {
             email: 'higor.ferreira@unilago.com.br',
             password: hashedPassword,
             course: 'Análise e Desenvolvimento de Sistemas',
-            semester: 1
+            semester: 1,
+            avatar: 'https://ads-unilago.onrender.com/assets/default-avatar.svg',
+            role: 'admin'
         });
 
         await masterUser.save();
