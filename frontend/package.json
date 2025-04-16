@@ -1,0 +1,8 @@
+{
+  "name": "atletica-ads-unilago-frontend",
+  "version": "1.0.0",
+  "description": "Frontend da rede social da Atlética de ADS Unilago",
+  "scripts": {
+    "start": "echo 'No start command needed for static site'"
+  }
+} 

@@ -3,7 +3,7 @@ services:
     name: atletica-ads-unilago-frontend
     env: static
     buildCommand: echo "No build needed for static site"
-    staticPublishPath: frontend
+    staticPublishPath: .
     headers:
       - path: /*
         name: Cache-Control
