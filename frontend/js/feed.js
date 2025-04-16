@@ -293,9 +293,6 @@ async function toggleLike(postId) {
 
 // Load online friends
 async function loadOnlineFriends() {
-    const friendsList = document.querySelector('.online-friends');
-    friendsList.innerHTML = '<div class="loading">Loading friends...</div>';
-    
     try {
         const response = await fetch(`${API_URL}/friends/online`, {
             headers: {
@@ -306,26 +303,16 @@ async function loadOnlineFriends() {
         if (!response.ok) throw new Error('Failed to load friends');
         
         const friends = await response.json();
-        
-        if (friends.length === 0) {
-            friendsList.innerHTML = '<div class="error-message">No friends online</div>';
-            return;
-        }
-        
-        friendsList.innerHTML = '';
-        friends.forEach(friend => {
-            const friendItem = document.createElement('li');
-            friendItem.className = 'friend-item';
-            friendItem.innerHTML = `
-                <img src="${friend.avatar || DEFAULT_AVATAR}" alt="${friend.name}" class="user-avatar">
-                <span>${friend.name}</span>
-                <span class="online-indicator"></span>
-            `;
-            friendsList.appendChild(friendItem);
-        });
+        const friendsList = document.querySelector('.online-friends');
+        friendsList.innerHTML = friends.map(friend => `
+            <div class="friend-item">
+                <img src="${friend.avatar || DEFAULT_AVATAR}" alt="${friend.name}" class="friend-avatar">
+                <span class="friend-name">${friend.name}</span>
+            </div>
+        `).join('');
     } catch (error) {
         console.error('Error loading friends:', error);
-        friendsList.innerHTML = '<div class="error-message">Failed to load friends</div>';
+        showError('Failed to load friends');
     }
 }
 

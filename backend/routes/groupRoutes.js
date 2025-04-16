@@ -173,18 +173,38 @@ router.delete('/:id/members/:userId', (req, res) => {
     }
 });
 
-// @route   GET /api/groups/popular
-// @desc    Obter grupos populares
-// @access  Public
-router.get('/popular', async (req, res) => {
+// Obter grupos populares
+router.get('/popular', auth, async (req, res) => {
     try {
-        // Obter grupos com mais membros
-        const groups = await Group.find()
-            .sort({ members: -1 })
-            .limit(5)
-            .select('name description members courseEmblem');
+        // Simulação de dados de grupos populares
+        const popularGroups = [
+            {
+                _id: '1',
+                name: 'Turma ADS 1º Semestre',
+                description: 'Grupo para compartilhamento de materiais da turma',
+                members: ['1', '2', '3', '4'],
+                createdBy: '1',
+                isPrivate: true,
+                courseEmblem: 'ADS',
+                semester: 1,
+                createdAt: new Date(),
+                memberCount: 4
+            },
+            {
+                _id: '2',
+                name: 'Grupo de Programação',
+                description: 'Grupo para discussão sobre programação',
+                members: ['1', '2'],
+                createdBy: '1',
+                isPrivate: false,
+                courseEmblem: 'ADS',
+                semester: null,
+                createdAt: new Date(),
+                memberCount: 2
+            }
+        ];
 
-        res.json(groups);
+        res.json(popularGroups);
     } catch (error) {
         console.error('Erro ao buscar grupos populares:', error);
         res.status(500).json({ message: 'Erro ao buscar grupos populares' });
