@@ -10,6 +10,9 @@ const path = require('path');
 // Carregar variáveis de ambiente
 dotenv.config();
 
+// Configurar Mongoose
+mongoose.set('strictQuery', false);
+
 const app = express();
 
 // Middleware
