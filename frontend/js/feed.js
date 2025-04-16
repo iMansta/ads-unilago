@@ -1,8 +1,11 @@
+// Configuração da API
+const API_URL = 'https://atletica-ads-unilago.onrender.com/api';
+
 // Check authentication on page load
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '/login.html';
+        window.location.href = 'login.html';
         return;
     }
     
@@ -16,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load user profile data
 async function loadUserProfile() {
     try {
-        const response = await fetch('/api/user/profile', {
+        const response = await fetch(`${API_URL}/user/profile`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -26,7 +29,7 @@ async function loadUserProfile() {
         
         const user = await response.json();
         document.querySelector('.user-name').textContent = user.name;
-        document.querySelector('.user-avatar').src = user.avatar || '/assets/default-avatar.png';
+        document.querySelector('.user-avatar').src = user.avatar || 'assets/default-avatar.png';
     } catch (error) {
         console.error('Error loading profile:', error);
         showError('Failed to load user profile');
@@ -109,7 +112,7 @@ async function loadPosts() {
     postsContainer.innerHTML = '<div class="loading">Loading posts...</div>';
     
     try {
-        const response = await fetch('/api/posts', {
+        const response = await fetch(`${API_URL}/posts`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -140,7 +143,7 @@ function createPostElement(post) {
     postDiv.className = 'post';
     postDiv.innerHTML = `
         <div class="post-header">
-            <img src="${post.author.avatar || '/assets/default-avatar.png'}" alt="${post.author.name}" class="user-avatar">
+            <img src="${post.author.avatar || 'assets/default-avatar.png'}" alt="${post.author.name}" class="user-avatar">
             <div class="user-info">
                 <h3 class="user-name">${post.author.name}</h3>
                 <span class="post-time">${formatDate(post.createdAt)}</span>

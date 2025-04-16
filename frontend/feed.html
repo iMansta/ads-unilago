@@ -60,7 +60,7 @@
                     </button>
                     <div class="user-menu">
                         <img src="assets/default-avatar.png" alt="Seu avatar" class="user-avatar">
-                        <span class="user-name">Seu Nome</span>
+                        <span class="user-name">Carregando...</span>
                     </div>
                 </div>
             </header>
@@ -83,19 +83,19 @@
                     <div class="input-container">
                         <textarea placeholder="O que você está pensando?"></textarea>
                         <div class="post-actions">
-                            <button class="action-btn">
+                            <button class="action-btn" data-type="image" data-accept="image/*">
                                 <i class="fas fa-image"></i>
                                 <span>Foto</span>
                             </button>
-                            <button class="action-btn">
+                            <button class="action-btn" data-type="video" data-accept="video/*">
                                 <i class="fas fa-video"></i>
                                 <span>Vídeo</span>
                             </button>
-                            <button class="action-btn">
+                            <button class="action-btn" data-type="file" data-accept="*/*">
                                 <i class="fas fa-file"></i>
                                 <span>Arquivo</span>
                             </button>
-                            <button class="post-btn">Publicar</button>
+                            <button class="post-btn submit-post">Publicar</button>
                         </div>
                     </div>
                 </div>
@@ -124,7 +124,8 @@
         </aside>
     </div>
 
-    <script src="scripts/common.js"></script>
-    <script src="scripts/feed.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/feed.js"></script>
 </body>
 </html> 
