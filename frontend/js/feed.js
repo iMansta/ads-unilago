@@ -84,11 +84,21 @@ function setupPostForm() {
     
     // Handle post submission
     submitBtn.addEventListener('click', async () => {
+        const postInput = document.querySelector('.post-input');
+        if (!postInput) {
+            console.error('Post input element not found');
+            showError('Post input element not found');
+            return;
+        }
+        
         const content = postInput.value.trim();
-        if (!content) return;
+        if (!content) {
+            showError('Post content cannot be empty');
+            return;
+        }
         
         try {
-            const response = await fetch('/api/posts', {
+            const response = await fetch(`${API_URL}/posts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -294,16 +304,35 @@ async function toggleLike(postId) {
 // Load online friends
 async function loadOnlineFriends() {
     try {
+        console.log('Loading online friends...');
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found');
+            showError('Please login to see online friends');
+            return;
+        }
+
         const response = await fetch(`${API_URL}/friends/online`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             }
         });
         
-        if (!response.ok) throw new Error('Failed to load friends');
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Failed to load friends:', errorData);
+            throw new Error(errorData.message || 'Failed to load friends');
+        }
         
         const friends = await response.json();
+        console.log('Online friends loaded:', friends);
+        
         const friendsList = document.querySelector('.online-friends');
+        if (!friendsList) {
+            console.error('Friends list element not found');
+            return;
+        }
+
         friendsList.innerHTML = friends.map(friend => `
             <div class="friend-item">
                 <img src="${friend.avatar || DEFAULT_AVATAR}" alt="${friend.name}" class="friend-avatar">
@@ -312,25 +341,43 @@ async function loadOnlineFriends() {
         `).join('');
     } catch (error) {
         console.error('Error loading friends:', error);
-        showError('Failed to load friends');
+        showError(error.message || 'Failed to load friends');
     }
 }
 
 // Load popular groups
 async function loadPopularGroups() {
     const groupsList = document.querySelector('.popular-groups');
+    if (!groupsList) {
+        console.error('Groups list element not found');
+        return;
+    }
+
     groupsList.innerHTML = '<div class="loading">Loading groups...</div>';
     
     try {
+        console.log('Loading popular groups...');
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found');
+            showError('Please login to see popular groups');
+            return;
+        }
+
         const response = await fetch(`${API_URL}/groups/popular`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             }
         });
         
-        if (!response.ok) throw new Error('Failed to load groups');
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Failed to load groups:', errorData);
+            throw new Error(errorData.message || 'Failed to load groups');
+        }
         
         const groups = await response.json();
+        console.log('Popular groups loaded:', groups);
         
         if (groups.length === 0) {
             groupsList.innerHTML = '<div class="error-message">No groups available</div>';
@@ -350,7 +397,7 @@ async function loadPopularGroups() {
         });
     } catch (error) {
         console.error('Error loading groups:', error);
-        groupsList.innerHTML = '<div class="error-message">Failed to load groups</div>';
+        groupsList.innerHTML = `<div class="error-message">${error.message || 'Failed to load groups'}</div>`;
     }
 }
 
