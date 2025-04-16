@@ -4,40 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feed - Atlética ADS Unilago</title>
-    <link rel="stylesheet" href="styles/common.css">
     <link rel="stylesheet" href="styles/feed.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="feed-container">
-        <!-- Left Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        <!-- Sidebar -->
+        <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="https://ads-unilago.onrender.com/assets/atletica-logo.svg" alt="Logo Atlética ADS" class="logo">
-                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <img src="/assets/atletica-logo.svg" alt="Logo Atlética" class="logo">
             </div>
             <nav class="sidebar-nav">
-                <a href="feed.html" class="nav-item active">
+                <a href="/feed.html" class="nav-item active">
                     <i class="fas fa-home"></i>
                     <span>Feed</span>
                 </a>
-                <a href="friends.html" class="nav-item">
+                <a href="/friends.html" class="nav-item">
                     <i class="fas fa-user-friends"></i>
                     <span>Amigos</span>
                 </a>
-                <a href="groups.html" class="nav-item">
+                <a href="/groups.html" class="nav-item">
                     <i class="fas fa-users"></i>
                     <span>Grupos</span>
                 </a>
-                <a href="pages.html" class="nav-item">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Páginas</span>
-                </a>
-                <a href="events.html" class="nav-item">
+                <a href="/events.html" class="nav-item">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Eventos</span>
+                </a>
+                <a href="/profile.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Perfil</span>
                 </a>
             </nav>
         </aside>
@@ -45,87 +41,73 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Top Bar -->
-            <header class="top-bar">
+            <div class="top-bar">
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Pesquisar...">
                 </div>
                 <div class="top-bar-actions">
-                    <button class="theme-toggle" id="theme-toggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <button class="notification-toggle" id="notification-toggle">
+                    <button class="action-btn">
                         <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
                     </button>
-                    <div class="user-menu">
-                        <img src="https://ads-unilago.onrender.com/assets/default-avatar.svg" alt="Seu avatar" class="user-avatar">
-                        <span class="user-name">Carregando...</span>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Notification Panel -->
-            <div class="notification-panel" id="notification-panel">
-                <div class="notification-header">
-                    <h3>Notificações</h3>
-                    <button class="mark-all-read">Marcar todas como lidas</button>
-                </div>
-                <div class="notification-list" id="notification-list">
-                    <!-- Notifications will be loaded here -->
+                    <button class="action-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
                 </div>
             </div>
 
             <!-- Create Post -->
-            <section class="create-post">
+            <div class="create-post">
                 <div class="post-input">
-                    <img src="/assets/default-avatar.png" alt="Seu avatar" class="user-avatar">
+                    <img src="/assets/default-avatar.png" alt="Avatar" class="user-avatar">
                     <div class="input-container">
                         <textarea placeholder="O que você está pensando?"></textarea>
                         <div class="post-actions">
-                            <button class="action-btn" data-type="image" data-accept="image/*">
+                            <button class="action-btn">
                                 <i class="fas fa-image"></i>
                                 <span>Foto</span>
                             </button>
-                            <button class="action-btn" data-type="video" data-accept="video/*">
+                            <button class="action-btn">
                                 <i class="fas fa-video"></i>
                                 <span>Vídeo</span>
                             </button>
-                            <button class="action-btn" data-type="file" data-accept="*/*">
-                                <i class="fas fa-file"></i>
-                                <span>Arquivo</span>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i>
+                                <span>Evento</span>
                             </button>
                             <button class="submit-post">Publicar</button>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <!-- Posts Feed -->
-            <section class="posts-feed" id="posts-feed">
-                <!-- Posts will be loaded here -->
-            </section>
+            <div id="posts-container">
+                <!-- Posts serão carregados aqui via JavaScript -->
+            </div>
         </main>
 
         <!-- Right Sidebar -->
         <aside class="right-sidebar">
+            <!-- Online Friends -->
             <div class="online-friends">
                 <h3>Amigos Online</h3>
-                <div class="friends-list" id="online-friends-list">
-                    <!-- Online friends will be loaded here -->
+                <div id="online-friends-list" class="friends-list">
+                    <!-- Amigos online serão carregados aqui via JavaScript -->
                 </div>
             </div>
+
+            <!-- Popular Groups -->
             <div class="popular-groups">
                 <h3>Grupos Populares</h3>
-                <div class="groups-list" id="popular-groups-list">
-                    <!-- Popular groups will be loaded here -->
+                <div id="popular-groups-list" class="groups-list">
+                    <!-- Grupos populares serão carregados aqui via JavaScript -->
                 </div>
             </div>
         </aside>
     </div>
 
     <script src="js/config.js"></script>
-    <script src="js/common.js"></script>
     <script src="js/feed.js"></script>
 </body>
 </html> 
