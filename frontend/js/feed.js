@@ -41,11 +41,16 @@ async function loadUserProfile() {
 // Setup post creation form
 function setupPostForm() {
     const postForm = document.querySelector('.create-post');
-    const postInput = postForm.querySelector('.post-input');
+    const postInput = postForm.querySelector('textarea');
     const submitBtn = postForm.querySelector('.submit-post');
     
+    if (!postForm || !postInput || !submitBtn) {
+        console.error('Post form elements not found');
+        return;
+    }
+    
     // Handle file upload buttons
-    const fileButtons = postForm.querySelectorAll('.post-action-btn');
+    const fileButtons = postForm.querySelectorAll('.action-btn');
     fileButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const input = document.createElement('input');
@@ -61,7 +66,7 @@ function setupPostForm() {
                     formData.append('file', file);
                     
                     try {
-                        const response = await fetch('/api/upload', {
+                        const response = await fetch(`${API_URL}/upload`, {
                             method: 'POST',
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -84,13 +89,6 @@ function setupPostForm() {
     
     // Handle post submission
     submitBtn.addEventListener('click', async () => {
-        const postInput = document.querySelector('.post-input');
-        if (!postInput) {
-            console.error('Post input element not found');
-            showError('Post input element not found');
-            return;
-        }
-        
         const content = postInput.value.trim();
         if (!content) {
             showError('Post content cannot be empty');
@@ -107,13 +105,17 @@ function setupPostForm() {
                 body: JSON.stringify({ content })
             });
             
-            if (!response.ok) throw new Error('Failed to create post');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to create post');
+            }
             
             postInput.value = '';
             loadPosts(); // Reload posts
+            showError('Post created successfully!', 'success');
         } catch (error) {
             console.error('Post creation error:', error);
-            showError('Failed to create post');
+            showError(error.message || 'Failed to create post');
         }
     });
 }
@@ -304,100 +306,87 @@ async function toggleLike(postId) {
 // Load online friends
 async function loadOnlineFriends() {
     try {
-        console.log('Loading online friends...');
+        console.log('Carregando amigos online...');
         const token = localStorage.getItem('token');
         if (!token) {
-            console.error('No token found');
-            showError('Please login to see online friends');
+            console.log('Token não encontrado no localStorage');
             return;
         }
+        console.log('Token encontrado:', token);
 
         const response = await fetch(`${API_URL}/friends/online`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+        console.log('Resposta da API de amigos online:', response);
+
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Failed to load friends:', errorData);
-            throw new Error(errorData.message || 'Failed to load friends');
+            throw new Error(`Erro ao carregar amigos online: ${response.status}`);
         }
-        
+
         const friends = await response.json();
-        console.log('Online friends loaded:', friends);
-        
-        const friendsList = document.querySelector('.online-friends');
+        console.log('Amigos online recebidos:', friends);
+
+        const friendsList = document.getElementById('online-friends-list');
         if (!friendsList) {
-            console.error('Friends list element not found');
+            console.error('Elemento online-friends-list não encontrado');
             return;
         }
 
         friendsList.innerHTML = friends.map(friend => `
             <div class="friend-item">
-                <img src="${friend.avatar || DEFAULT_AVATAR}" alt="${friend.name}" class="friend-avatar">
-                <span class="friend-name">${friend.name}</span>
+                <img src="${friend.avatar || '/assets/default-avatar.png'}" alt="${friend.name}">
+                <span>${friend.name}</span>
             </div>
         `).join('');
     } catch (error) {
-        console.error('Error loading friends:', error);
-        showError(error.message || 'Failed to load friends');
+        console.error('Erro ao carregar amigos online:', error);
     }
 }
 
 // Load popular groups
 async function loadPopularGroups() {
-    const groupsList = document.querySelector('.popular-groups');
-    if (!groupsList) {
-        console.error('Groups list element not found');
-        return;
-    }
-
-    groupsList.innerHTML = '<div class="loading">Loading groups...</div>';
-    
     try {
-        console.log('Loading popular groups...');
+        console.log('Carregando grupos populares...');
         const token = localStorage.getItem('token');
         if (!token) {
-            console.error('No token found');
-            showError('Please login to see popular groups');
+            console.log('Token não encontrado no localStorage');
             return;
         }
+        console.log('Token encontrado:', token);
 
         const response = await fetch(`${API_URL}/groups/popular`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+        console.log('Resposta da API de grupos populares:', response);
+
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Failed to load groups:', errorData);
-            throw new Error(errorData.message || 'Failed to load groups');
+            throw new Error(`Erro ao carregar grupos populares: ${response.status}`);
         }
-        
+
         const groups = await response.json();
-        console.log('Popular groups loaded:', groups);
-        
-        if (groups.length === 0) {
-            groupsList.innerHTML = '<div class="error-message">No groups available</div>';
+        console.log('Grupos populares recebidos:', groups);
+
+        const groupsList = document.getElementById('popular-groups-list');
+        if (!groupsList) {
+            console.error('Elemento popular-groups-list não encontrado');
             return;
         }
-        
-        groupsList.innerHTML = '';
-        groups.forEach(group => {
-            const groupItem = document.createElement('li');
-            groupItem.className = 'group-item';
-            groupItem.innerHTML = `
-                <img src="${group.avatar || '/assets/default-group.png'}" alt="${group.name}" class="group-avatar">
-                <span>${group.name}</span>
-                <span class="member-count">${group.memberCount} members</span>
-            `;
-            groupsList.appendChild(groupItem);
-        });
+
+        groupsList.innerHTML = groups.map(group => `
+            <div class="group-item">
+                <img src="${group.courseEmblem || '/assets/default-group.png'}" alt="${group.name}">
+                <div class="group-info">
+                    <h4>${group.name}</h4>
+                    <p>${group.memberCount} membros</p>
+                </div>
+            </div>
+        `).join('');
     } catch (error) {
-        console.error('Error loading groups:', error);
-        groupsList.innerHTML = `<div class="error-message">${error.message || 'Failed to load groups'}</div>`;
+        console.error('Erro ao carregar grupos populares:', error);
     }
 }
 
@@ -418,15 +407,15 @@ function formatDate(dateString) {
     return 'Just now';
 }
 
-// Show error message
-function showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.textContent = message;
-    document.body.appendChild(errorDiv);
+// Show error or success message
+function showError(message, type = 'error') {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.textContent = message;
+    document.body.appendChild(messageDiv);
     
     setTimeout(() => {
-        errorDiv.remove();
+        messageDiv.remove();
     }, 3000);
 }
 
