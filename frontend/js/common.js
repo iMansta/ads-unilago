@@ -68,12 +68,38 @@ function checkAuth() {
         window.location.href = 'login.html';
         return false;
     }
+
+    // Verificar se o token está expirado
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp < Date.now() / 1000) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+            return false;
+        }
+    } catch (error) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+        return false;
+    }
+
     return true;
 }
 
-// Função para fazer logout
+// Função para fazer logout seguro
 function logout() {
+    // Limpar dados sensíveis
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Limpar cookies
+    document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+    });
+    
+    // Redirecionar para login
     window.location.href = 'login.html';
 }
 

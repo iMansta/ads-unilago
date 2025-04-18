@@ -19,9 +19,11 @@ const app = express();
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
         ? ['https://atletica-ads-unilago.onrender.com', 'https://atletica-ads-unilago-frontend.onrender.com', 'https://ads-unilago.vercel.app']
-        : '*',
+        : 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    maxAge: 86400 // 24 horas
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,6 +32,16 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV !== 'production') {
     app.use(express.static(path.join(__dirname, '../frontend')));
 }
+
+// Headers de segurança
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('Content-Security-Policy', "default-src 'self'");
+    next();
+});
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ads-unilago';

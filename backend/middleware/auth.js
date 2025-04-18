@@ -25,7 +25,19 @@ module.exports = function (req, res, next) {
 
     try {
         // Verificar token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET não configurado');
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Verificar se o token expirou
+        if (decoded.exp < Date.now() / 1000) {
+            return res.status(401).json({
+                success: false,
+                message: 'Token expirado',
+            });
+        }
 
         // Adicionar usuário à requisição
         req.user = decoded.user;
