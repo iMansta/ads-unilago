@@ -1,1 +1,64 @@
- 
+<!-- Chat Popup -->
+<div id="chat-popup">
+    <!-- Header do Chat -->
+    <div id="chat-popup-header">
+        <h3>Chat</h3>
+        <div class="actions">
+            <button id="chat-popup-minimize" title="Minimizar">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button id="chat-popup-close" title="Fechar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Conteúdo do Chat -->
+    <div id="chat-popup-content">
+        <!-- Lista de Conversas -->
+        <div id="chat-popup-list">
+            <!-- As conversas serão inseridas aqui dinamicamente -->
+        </div>
+
+        <!-- Janela de Chat -->
+        <div id="chat-popup-window">
+            <div class="chat-header">
+                <button id="chat-back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <img id="chat-avatar" src="" alt="Avatar" class="conversation-avatar">
+                <div class="conversation-info">
+                    <div id="chat-name" class="conversation-name"></div>
+                    <div id="chat-status" class="conversation-last-message"></div>
+                </div>
+            </div>
+
+            <div class="chat-messages">
+                <!-- As mensagens serão inseridas aqui dinamicamente -->
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="chat-message-input" placeholder="Digite uma mensagem...">
+                <button id="chat-send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Nova Conversa -->
+<div id="new-conversation-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Nova Conversa</h3>
+            <button id="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <input type="text" id="user-search" class="search-input" placeholder="Pesquisar usuários...">
+        <div class="user-list">
+            <!-- Os resultados da pesquisa serão inseridos aqui dinamicamente -->
+        </div>
+    </div>
+</div> 

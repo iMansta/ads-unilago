@@ -1,62 +1,90 @@
 class ChatPopup {
     constructor() {
+        this.API_URL = 'https://ads-unilago.onrender.com/api';
+        this.token = localStorage.getItem('token');
+        this.currentConversation = null;
+        this.socket = null;
+
+        // Elementos do DOM
         this.popup = document.getElementById('chat-popup');
-        this.header = document.getElementById('chat-popup-header');
         this.minimizeBtn = document.getElementById('chat-popup-minimize');
         this.closeBtn = document.getElementById('chat-popup-close');
-        this.list = document.getElementById('chat-popup-list');
-        this.window = document.getElementById('chat-popup-window');
-        this.backBtn = document.getElementById('chat-popup-back');
-        this.messagesContainer = document.getElementById('chat-popup-messages');
-        this.messageInput = document.getElementById('chat-popup-message-input');
-        this.sendBtn = document.getElementById('chat-popup-send');
-        this.newChatModal = document.getElementById('chat-popup-new-chat-modal');
-        this.userSearch = document.getElementById('chat-popup-user-search');
-        this.userList = document.getElementById('chat-popup-user-list');
-        this.closeModalBtn = document.getElementById('chat-popup-close-modal');
+        this.conversationList = document.getElementById('chat-popup-list');
+        this.chatWindow = document.getElementById('chat-popup-window');
+        this.chatBackBtn = document.getElementById('chat-back');
+        this.chatAvatar = document.getElementById('chat-avatar');
+        this.chatName = document.getElementById('chat-name');
+        this.chatStatus = document.getElementById('chat-status');
+        this.chatMessages = document.querySelector('.chat-messages');
+        this.messageInput = document.getElementById('chat-message-input');
+        this.sendBtn = document.getElementById('chat-send');
+        this.newConversationModal = document.getElementById('new-conversation-modal');
+        this.userSearch = document.getElementById('user-search');
+        this.userList = document.querySelector('.user-list');
+        this.modalCloseBtn = document.getElementById('modal-close');
 
-        this.currentConversation = null;
-        this.conversations = [];
-        this.isMinimized = false;
-
-        this.setupEventListeners();
+        // Inicializar eventos
+        this.initializeEvents();
+        this.initializeSocket();
         this.loadConversations();
     }
 
-    setupEventListeners() {
-        // Minimizar/Maximizar
-        this.minimizeBtn.addEventListener('click', () => this.toggleMinimize());
-        this.header.addEventListener('click', () => {
-            if (this.isMinimized) {
-                this.toggleMinimize();
-            }
+    initializeEvents() {
+        // Minimizar/Maximizar popup
+        this.minimizeBtn.addEventListener('click', () => {
+            this.popup.classList.toggle('minimized');
         });
 
-        // Fechar
-        this.closeBtn.addEventListener('click', () => this.close());
+        // Fechar popup
+        this.closeBtn.addEventListener('click', () => {
+            this.popup.style.display = 'none';
+        });
 
         // Voltar para lista de conversas
-        this.backBtn.addEventListener('click', () => this.showConversationList());
+        this.chatBackBtn.addEventListener('click', () => {
+            this.showConversationList();
+        });
 
         // Enviar mensagem
         this.sendBtn.addEventListener('click', () => this.sendMessage());
         this.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.sendMessage();
+            if (e.key === 'Enter') this.sendMessage();
+        });
+
+        // Pesquisar usuários
+        this.userSearch.addEventListener('input', this.searchUsers.bind(this));
+
+        // Fechar modal
+        this.modalCloseBtn.addEventListener('click', () => {
+            this.newConversationModal.style.display = 'none';
+        });
+    }
+
+    initializeSocket() {
+        this.socket = io(this.API_URL, {
+            auth: {
+                token: this.token
             }
         });
 
-        // Nova conversa
-        this.userSearch.addEventListener('input', (e) => this.searchUsers(e.target.value));
-        this.closeModalBtn.addEventListener('click', () => this.closeNewChatModal());
+        this.socket.on('connect', () => {
+            console.log('Conectado ao servidor de chat');
+        });
+
+        this.socket.on('newMessage', (message) => {
+            if (this.currentConversation && message.conversationId === this.currentConversation.id) {
+                this.appendMessage(message);
+            } else {
+                this.updateConversationList();
+            }
+        });
     }
 
     async loadConversations() {
         try {
-            const response = await fetch(`${API_URL}/chat/conversations`, {
+            const response = await fetch(`${this.API_URL}/conversations`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${this.token}`
                 }
             });
 
@@ -64,59 +92,53 @@ class ChatPopup {
                 throw new Error('Erro ao carregar conversas');
             }
 
-            this.conversations = await response.json();
-            this.renderConversations();
+            const conversations = await response.json();
+            this.renderConversations(conversations);
         } catch (error) {
             console.error('Erro ao carregar conversas:', error);
-            showMessage('Erro ao carregar conversas', 'error');
         }
     }
 
-    renderConversations() {
-        if (this.conversations.length === 0) {
-            this.list.innerHTML = '<p class="no-conversations">Nenhuma conversa encontrada</p>';
-            return;
-        }
-
-        this.list.innerHTML = this.conversations.map(conversation => {
-            const otherParticipant = conversation.participants.find(
-                p => p._id !== currentUser._id
-            );
-            const unreadCount = conversation.unreadCount.get(currentUser._id) || 0;
-
-            return `
-                <div class="chat-popup-conversation" data-id="${conversation._id}">
-                    <img src="${otherParticipant.avatar || '/assets/default-avatar.svg'}" 
-                         alt="${otherParticipant.name}" 
-                         class="chat-popup-avatar">
-                    <div class="chat-popup-info">
-                        <h4 class="chat-popup-name">${otherParticipant.name}</h4>
-                        <p class="chat-popup-message">${conversation.lastMessage}</p>
-                    </div>
-                    <div class="chat-popup-meta">
-                        <span class="chat-popup-time">${new Date(conversation.lastMessageAt).toLocaleTimeString()}</span>
-                        ${unreadCount > 0 ? `
-                            <span class="chat-popup-badge">${unreadCount}</span>
-                        ` : ''}
-                    </div>
+    renderConversations(conversations) {
+        this.conversationList.innerHTML = '';
+        
+        conversations.forEach(conversation => {
+            const conversationElement = document.createElement('div');
+            conversationElement.className = 'conversation-item';
+            conversationElement.dataset.conversationId = conversation.id;
+            
+            conversationElement.innerHTML = `
+                <img src="${conversation.participant.avatar}" alt="Avatar" class="conversation-avatar">
+                <div class="conversation-info">
+                    <div class="conversation-name">${conversation.participant.name}</div>
+                    <div class="conversation-last-message">${conversation.lastMessage || ''}</div>
                 </div>
+                ${conversation.unreadCount > 0 ? 
+                    `<div class="unread-badge">${conversation.unreadCount}</div>` : ''}
+                <div class="conversation-time">${this.formatTime(conversation.updatedAt)}</div>
             `;
-        }).join('');
 
-        // Adicionar event listeners
-        this.list.querySelectorAll('.chat-popup-conversation').forEach(item => {
-            item.addEventListener('click', () => {
-                const conversationId = item.dataset.id;
-                this.openConversation(conversationId);
+            conversationElement.addEventListener('click', () => {
+                this.openConversation(conversation);
             });
+
+            this.conversationList.appendChild(conversationElement);
         });
     }
 
-    async openConversation(conversationId) {
+    async openConversation(conversation) {
+        this.currentConversation = conversation;
+        this.showChatWindow();
+        
+        // Atualizar informações do chat
+        this.chatAvatar.src = conversation.participant.avatar;
+        this.chatName.textContent = conversation.participant.name;
+        this.chatStatus.textContent = 'Online';
+
         try {
-            const response = await fetch(`${API_URL}/chat/messages/${conversationId}`, {
+            const response = await fetch(`${this.API_URL}/conversations/${conversation.id}/messages`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${this.token}`
                 }
             });
 
@@ -124,42 +146,33 @@ class ChatPopup {
                 throw new Error('Erro ao carregar mensagens');
             }
 
-            const data = await response.json();
-            this.currentConversation = {
-                id: conversationId,
-                ...data.conversation
-            };
-
-            this.renderMessages(data.messages);
-            this.showChatWindow();
+            const messages = await response.json();
+            this.renderMessages(messages);
         } catch (error) {
-            console.error('Erro ao abrir conversa:', error);
-            showMessage('Erro ao abrir conversa', 'error');
+            console.error('Erro ao carregar mensagens:', error);
         }
     }
 
     renderMessages(messages) {
-        this.messagesContainer.innerHTML = messages.map(message => `
-            <div class="chat-popup-message-item ${message.sender._id === currentUser._id ? 'sent' : 'received'}">
-                <img src="${message.sender.avatar || '/assets/default-avatar.svg'}" 
-                     alt="${message.sender.name}" 
-                     class="chat-popup-message-avatar">
-                <div class="chat-popup-message-content">
-                    <div class="chat-popup-message-text">${message.content}</div>
-                    <div class="chat-popup-message-meta">
-                        <span class="message-time">
-                            ${new Date(message.createdAt).toLocaleTimeString()}
-                        </span>
-                        ${message.sender._id === currentUser._id ? `
-                            <span class="message-status ${message.readBy.length > 1 ? 'read' : 'sent'}">
-                                <i class="fas fa-check"></i>
-                            </span>
-                        ` : ''}
-                    </div>
-                </div>
-            </div>
-        `).join('');
+        this.chatMessages.innerHTML = '';
+        
+        messages.forEach(message => {
+            this.appendMessage(message);
+        });
 
+        this.scrollToBottom();
+    }
+
+    appendMessage(message) {
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${message.senderId === this.currentConversation.participant.id ? 'received' : 'sent'}`;
+        
+        messageElement.innerHTML = `
+            <div class="message-content">${message.content}</div>
+            <div class="message-time">${this.formatTime(message.createdAt)}</div>
+        `;
+
+        this.chatMessages.appendChild(messageElement);
         this.scrollToBottom();
     }
 
@@ -168,16 +181,13 @@ class ChatPopup {
         if (!content || !this.currentConversation) return;
 
         try {
-            const response = await fetch(`${API_URL}/chat/messages`, {
+            const response = await fetch(`${this.API_URL}/conversations/${this.currentConversation.id}/messages`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${this.token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    conversationId: this.currentConversation.id,
-                    content
-                })
+                body: JSON.stringify({ content })
             });
 
             if (!response.ok) {
@@ -185,98 +195,64 @@ class ChatPopup {
             }
 
             const message = await response.json();
-            this.addMessage(message);
+            this.appendMessage(message);
             this.messageInput.value = '';
         } catch (error) {
             console.error('Erro ao enviar mensagem:', error);
-            showMessage('Erro ao enviar mensagem', 'error');
         }
     }
 
-    addMessage(message) {
-        const messageElement = document.createElement('div');
-        messageElement.className = `chat-popup-message-item ${message.sender._id === currentUser._id ? 'sent' : 'received'}`;
-        messageElement.innerHTML = `
-            <img src="${message.sender.avatar || '/assets/default-avatar.svg'}" 
-                 alt="${message.sender.name}" 
-                 class="chat-popup-message-avatar">
-            <div class="chat-popup-message-content">
-                <div class="chat-popup-message-text">${message.content}</div>
-                <div class="chat-popup-message-meta">
-                    <span class="message-time">
-                        ${new Date(message.createdAt).toLocaleTimeString()}
-                    </span>
-                    ${message.sender._id === currentUser._id ? `
-                        <span class="message-status sent">
-                            <i class="fas fa-check"></i>
-                        </span>
-                    ` : ''}
-                </div>
-            </div>
-        `;
-
-        this.messagesContainer.appendChild(messageElement);
-        this.scrollToBottom();
-    }
-
-    async searchUsers(query) {
-        if (!query) {
-            this.userList.innerHTML = '';
-            return;
-        }
+    async searchUsers() {
+        const query = this.userSearch.value.trim();
+        if (query.length < 2) return;
 
         try {
-            const response = await fetch(`${API_URL}/users/search?q=${encodeURIComponent(query)}`, {
+            const response = await fetch(`${this.API_URL}/users/search?q=${encodeURIComponent(query)}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${this.token}`
                 }
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao buscar usuários');
+                throw new Error('Erro ao pesquisar usuários');
             }
 
             const users = await response.json();
-            this.renderUserList(users);
+            this.renderUserSearchResults(users);
         } catch (error) {
-            console.error('Erro ao buscar usuários:', error);
-            showMessage('Erro ao buscar usuários', 'error');
+            console.error('Erro ao pesquisar usuários:', error);
         }
     }
 
-    renderUserList(users) {
-        this.userList.innerHTML = users.map(user => `
-            <div class="user-item" data-id="${user._id}">
-                <img src="${user.avatar || '/assets/default-avatar.svg'}" 
-                     alt="${user.name}" 
-                     class="user-avatar">
-                <div class="user-item-info">
-                    <h4>${user.name}</h4>
-                    <p>${user.email}</p>
-                </div>
-            </div>
-        `).join('');
+    renderUserSearchResults(users) {
+        this.userList.innerHTML = '';
+        
+        users.forEach(user => {
+            const userElement = document.createElement('div');
+            userElement.className = 'user-item';
+            
+            userElement.innerHTML = `
+                <img src="${user.avatar}" alt="Avatar" class="user-avatar">
+                <div class="user-name">${user.name}</div>
+            `;
 
-        // Adicionar event listeners
-        this.userList.querySelectorAll('.user-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const userId = item.dataset.id;
-                this.startNewConversation(userId);
+            userElement.addEventListener('click', () => {
+                this.startNewConversation(user);
             });
+
+            this.userList.appendChild(userElement);
         });
     }
 
-    async startNewConversation(userId) {
+    async startNewConversation(user) {
         try {
-            const response = await fetch(`${API_URL}/chat/conversations`, {
+            const response = await fetch(`${this.API_URL}/conversations`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${this.token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    participants: [currentUser._id, userId]
-                })
+                body: JSON.stringify({ participantId: user.id })
             });
 
             if (!response.ok) {
@@ -284,49 +260,35 @@ class ChatPopup {
             }
 
             const conversation = await response.json();
-            this.closeNewChatModal();
-            this.openConversation(conversation._id);
+            this.newConversationModal.style.display = 'none';
+            this.openConversation(conversation);
         } catch (error) {
             console.error('Erro ao iniciar conversa:', error);
-            showMessage('Erro ao iniciar conversa', 'error');
         }
     }
 
-    toggleMinimize() {
-        this.isMinimized = !this.isMinimized;
-        this.popup.classList.toggle('minimized');
-    }
-
     showChatWindow() {
-        this.list.style.display = 'none';
-        this.window.classList.add('active');
+        this.conversationList.style.display = 'none';
+        this.chatWindow.style.display = 'flex';
     }
 
     showConversationList() {
-        this.window.classList.remove('active');
-        this.list.style.display = 'block';
-    }
-
-    close() {
-        this.popup.style.display = 'none';
-    }
-
-    open() {
-        this.popup.style.display = 'flex';
-        this.loadConversations();
-    }
-
-    openNewChatModal() {
-        this.newChatModal.classList.add('active');
-    }
-
-    closeNewChatModal() {
-        this.newChatModal.classList.remove('active');
-        this.userSearch.value = '';
-        this.userList.innerHTML = '';
+        this.chatWindow.style.display = 'none';
+        this.conversationList.style.display = 'block';
+        this.currentConversation = null;
     }
 
     scrollToBottom() {
-        this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
     }
-} 
+
+    formatTime(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+}
+
+// Inicializar o chat popup quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', () => {
+    window.chatPopup = new ChatPopup();
+}); 
