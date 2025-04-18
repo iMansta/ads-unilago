@@ -1,16 +1,18 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'O nome é obrigatório'],
+        required: [true, 'Nome é obrigatório'],
         trim: true,
         minlength: [2, 'O nome deve ter pelo menos 2 caracteres'],
         maxlength: [50, 'O nome não pode ter mais de 50 caracteres'],
     },
     email: {
         type: String,
-        required: [true, 'O email é obrigatório'],
+        required: [true, 'Email é obrigatório'],
         unique: true,
         trim: true,
         lowercase: true,
@@ -18,20 +20,37 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'A senha é obrigatória'],
-        minlength: [6, 'A senha deve ter pelo menos 6 caracteres'],
-    },
-    course: {
-        type: String,
-        required: true,
+        required: [true, 'Senha é obrigatória'],
+        minlength: [6, 'Senha deve ter no mínimo 6 caracteres'],
+        select: false
     },
     registration: {
         type: String,
-        required: true,
+        required: [true, 'Matrícula é obrigatória'],
+        unique: true,
+        trim: true
+    },
+    course: {
+        type: String,
+        required: [true, 'Curso é obrigatório'],
+        trim: true
     },
     avatar: {
         type: String,
-        default: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
+        default: 'default-avatar.png'
+    },
+    status: {
+        type: String,
+        enum: ['online', 'offline', 'away'],
+        default: 'offline'
+    },
+    lastSeen: {
+        type: Date,
+        default: Date.now
+    },
+    socketId: {
+        type: String,
+        default: null
     },
     bio: {
         type: String,
@@ -61,24 +80,64 @@ const userSchema = new mongoose.Schema({
             ref: 'Event',
         },
     ],
-    lastActive: {
-        type: Date,
-        default: Date.now,
-    },
     createdAt: {
         type: Date,
-        default: Date.now,
+        default: Date.now
     },
     updatedAt: {
         type: Date,
-        default: Date.now,
-    },
+        default: Date.now
+    }
 });
 
-// Atualizar o campo updatedAt antes de salvar
-userSchema.pre('save', function (next) {
+// Middleware para atualizar o timestamp
+userSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();
 });
 
-module.exports = mongoose.model('User', userSchema);
+// Middleware para hash da senha
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Método para comparar senhas
+userSchema.methods.comparePassword = async function(candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Método para gerar token JWT
+userSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign(
+        { 
+            id: this._id,
+            name: this.name,
+            email: this.email,
+            registration: this.registration,
+            course: this.course
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+    );
+    return token;
+};
+
+// Método para obter dados públicos do usuário
+userSchema.methods.getPublicProfile = function() {
+    const userObject = this.toObject();
+    delete userObject.password;
+    delete userObject.__v;
+    return userObject;
+};
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

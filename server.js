@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const { authLimiter, apiLimiter } = require('./middleware/rateLimiter');
 const securityLogging = require('./middleware/securityLogger');
+const userRoutes = require('./routes/userRoutes');
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -300,6 +301,9 @@ app.post('/api/friends/add/:id', auth, async (req, res) => {
         res.status(500).json({ message: 'Erro ao adicionar amigo' });
     }
 });
+
+// Rotas
+app.use('/api/users', userRoutes);
 
 // Rota para servir o frontend
 app.get('/', (req, res) => {

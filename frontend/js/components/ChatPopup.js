@@ -7,6 +7,17 @@ class ChatPopup {
             return;
         }
 
+        // Decodificar token para obter informações do usuário
+        try {
+            const payload = JSON.parse(atob(this.token.split('.')[1]));
+            this.userId = payload.id;
+            this.userName = payload.name;
+            this.userEmail = payload.email;
+        } catch (error) {
+            console.error('Erro ao decodificar token:', error);
+            return;
+        }
+
         // Verificar se o elemento popup existe
         if (!document.getElementById('chat-popup')) {
             console.warn('Elemento chat-popup não encontrado no DOM. Aguardando carregamento...');
@@ -33,6 +44,7 @@ class ChatPopup {
         this.initializeEvents();
         this.initializeSocket();
         this.loadConversations();
+        this.updateUserStatus('online');
     }
 
     initializeElements() {
@@ -310,9 +322,12 @@ class ChatPopup {
         this.showChatWindow();
         
         // Atualizar informações do chat
-        this.chatAvatar.src = conversation.participant.avatar;
-        this.chatName.textContent = conversation.participant.name;
-        this.chatStatus.textContent = 'Online';
+        const participant = conversation.participants.find(p => p.id !== this.userId);
+        if (participant) {
+            this.chatAvatar.src = participant.avatar;
+            this.chatName.textContent = participant.name;
+            this.chatStatus.textContent = participant.status === 'online' ? 'Online' : 'Offline';
+        }
 
         try {
             const response = await fetch(`${this.API_URL}/conversations/${conversation.id}/messages`, {
@@ -470,6 +485,25 @@ class ChatPopup {
         this.newConversationModal.style.display = 'none';
         this.userSearch.value = '';
         this.userList.innerHTML = '';
+    }
+
+    async updateUserStatus(status) {
+        try {
+            const response = await fetch(`${this.API_URL}/users/status`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status })
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar status');
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar status:', error);
+        }
     }
 }
 
