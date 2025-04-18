@@ -66,4 +66,15 @@
             <!-- Os resultados da pesquisa serão inseridos aqui dinamicamente -->
         </div>
     </div>
-</div> 
+</div>
+
+<!-- Scripts necessários -->
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/components/ChatPopup.js"></script>
+<script>
+    // Inicializar o chat popup quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', () => {
+        window.chatPopup = new ChatPopup();
+    });
+</script> 
