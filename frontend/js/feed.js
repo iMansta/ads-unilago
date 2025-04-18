@@ -1,5 +1,5 @@
 // Configurações
-const API_URL = 'http://localhost:3000/api';
+const API_URL = window.getApiUrl();
 let token = localStorage.getItem('token');
 
 // Elementos do DOM
@@ -297,49 +297,44 @@ function renderOnlineMembers(members) {
     });
 }
 
-// Criar post
-createPostForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const content = postContent.value.trim();
-    if (!content) return;
-    
-    try {
-        const response = await fetch(`${API_URL}/posts`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ content })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Erro ao criar post');
+// Verificar se os elementos existem
+if (postsContainer) {
+    // Carregar posts quando a página carregar
+    document.addEventListener('DOMContentLoaded', () => {
+        loadPosts();
+        if (onlineMembersList) {
+            loadOnlineMembers();
         }
-        
-        const post = await response.json();
-        const postElement = createPostElement(post);
-        postsContainer.insertBefore(postElement, postsContainer.firstChild);
-        
-        postContent.value = '';
-        showMessage('Post criado com sucesso!', 'success');
-    } catch (error) {
-        showMessage(error.message);
-    }
-});
+    });
+}
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    if (!token) {
-        window.location.href = '/login.html';
-        return;
-    }
-    
-    loadPosts();
-    loadOnlineMembers();
-    
-    // Atualizar posts a cada 30 segundos
-    setInterval(loadPosts, 30000);
-    setInterval(loadOnlineMembers, 30000);
-}); 
+if (createPostForm) {
+    createPostForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!postContent.value.trim()) return;
+
+        try {
+            const response = await fetch(`${API_URL}/posts`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: postContent.value.trim()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao criar post');
+            }
+
+            const post = await response.json();
+            const postElement = createPostElement(post);
+            postsContainer.insertBefore(postElement, postsContainer.firstChild);
+            postContent.value = '';
+        } catch (error) {
+            showMessage(error.message);
+        }
+    });
+} 

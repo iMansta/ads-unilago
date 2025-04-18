@@ -7,6 +7,17 @@ class ChatPopup {
             return;
         }
 
+        // Verificar se o elemento popup existe
+        if (!document.getElementById('chat-popup')) {
+            console.warn('Elemento chat-popup não encontrado no DOM. Aguardando carregamento...');
+            setTimeout(() => this.initialize(), 1000);
+            return;
+        }
+
+        this.initialize();
+    }
+
+    initialize() {
         // Configurações
         this.API_URL = window.getApiUrl();
         this.SOCKET_URL = window.getSocketUrl();
