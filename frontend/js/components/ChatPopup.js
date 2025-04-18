@@ -18,6 +18,7 @@ class ChatPopup {
         this.chatMessages = document.querySelector('.chat-messages');
         this.messageInput = document.getElementById('chat-message-input');
         this.sendBtn = document.getElementById('chat-send');
+        this.newConversationBtn = document.getElementById('new-conversation-btn');
         this.newConversationModal = document.getElementById('new-conversation-modal');
         this.userSearch = document.getElementById('user-search');
         this.userList = document.querySelector('.user-list');
@@ -51,13 +52,32 @@ class ChatPopup {
             if (e.key === 'Enter') this.sendMessage();
         });
 
+        // Abrir modal de nova conversa
+        this.newConversationBtn.addEventListener('click', () => {
+            this.newConversationModal.style.display = 'block';
+            this.userSearch.focus();
+        });
+
         // Pesquisar usuários
         this.userSearch.addEventListener('input', this.searchUsers.bind(this));
 
         // Fechar modal
         this.modalCloseBtn.addEventListener('click', () => {
-            this.newConversationModal.style.display = 'none';
+            this.closeNewConversationModal();
         });
+
+        // Fechar modal ao clicar fora
+        this.newConversationModal.addEventListener('click', (e) => {
+            if (e.target === this.newConversationModal) {
+                this.closeNewConversationModal();
+            }
+        });
+    }
+
+    closeNewConversationModal() {
+        this.newConversationModal.style.display = 'none';
+        this.userSearch.value = '';
+        this.userList.innerHTML = '';
     }
 
     initializeSocket() {
@@ -260,7 +280,7 @@ class ChatPopup {
             }
 
             const conversation = await response.json();
-            this.newConversationModal.style.display = 'none';
+            this.closeNewConversationModal();
             this.openConversation(conversation);
         } catch (error) {
             console.error('Erro ao iniciar conversa:', error);
