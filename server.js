@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const dotenv = require('dotenv');
 const path = require('path');
+const { authLimiter, apiLimiter } = require('./middleware/rateLimiter');
+const securityLogging = require('./middleware/securityLogger');
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -42,6 +44,13 @@ app.use((req, res, next) => {
     res.setHeader('Content-Security-Policy', "default-src 'self'");
     next();
 });
+
+// Middleware de segurança
+app.use(securityLogging);
+
+// Rate limiting
+app.use('/api/auth', authLimiter);
+app.use('/api', apiLimiter);
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ads-unilago';
