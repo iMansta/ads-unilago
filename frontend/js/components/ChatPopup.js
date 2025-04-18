@@ -160,50 +160,61 @@ class ChatPopup {
     }
 
     initializeSocket() {
-        this.socket = io(this.SOCKET_URL, {
-            ...window.config.socketConfig,
-            auth: {
-                token: this.token
-            }
-        });
+        try {
+            this.socket = io(this.SOCKET_URL, {
+                ...window.config.socketConfig,
+                auth: {
+                    token: this.token
+                },
+                transports: ['websocket', 'polling'],
+                reconnection: true,
+                reconnectionAttempts: this.maxReconnectAttempts,
+                reconnectionDelay: 1000,
+                reconnectionDelayMax: 5000,
+                timeout: 20000
+            });
 
-        this.socket.on('connect', () => {
-            console.log('Conectado ao servidor de chat');
-            this.updateConnectionStatus(true);
-            this.reconnectAttempts = 0;
-        });
+            this.socket.on('connect', () => {
+                console.log('Conectado ao servidor de chat');
+                this.updateConnectionStatus(true);
+                this.reconnectAttempts = 0;
+            });
 
-        this.socket.on('disconnect', () => {
-            console.log('Desconectado do servidor de chat');
-            this.updateConnectionStatus(false);
+            this.socket.on('disconnect', () => {
+                console.log('Desconectado do servidor de chat');
+                this.updateConnectionStatus(false);
+                this.attemptReconnect();
+            });
+
+            this.socket.on('connect_error', (error) => {
+                console.error('Erro de conexão com o servidor de chat:', error);
+                this.updateConnectionStatus(false);
+                this.attemptReconnect();
+            });
+
+            this.socket.on('newMessage', (message) => {
+                if (this.currentConversation && message.conversationId === this.currentConversation.id) {
+                    this.appendMessage(message);
+                } else {
+                    this.updateConversationList();
+                }
+            });
+
+            this.socket.on('typing', (data) => {
+                if (this.currentConversation && data.conversationId === this.currentConversation.id) {
+                    this.showTypingIndicator(data.userId);
+                }
+            });
+
+            this.socket.on('stopTyping', (data) => {
+                if (this.currentConversation && data.conversationId === this.currentConversation.id) {
+                    this.hideTypingIndicator(data.userId);
+                }
+            });
+        } catch (error) {
+            console.error('Erro ao inicializar Socket.IO:', error);
             this.attemptReconnect();
-        });
-
-        this.socket.on('connect_error', (error) => {
-            console.error('Erro de conexão com o servidor de chat:', error);
-            this.updateConnectionStatus(false);
-            this.attemptReconnect();
-        });
-
-        this.socket.on('newMessage', (message) => {
-            if (this.currentConversation && message.conversationId === this.currentConversation.id) {
-                this.appendMessage(message);
-            } else {
-                this.updateConversationList();
-            }
-        });
-
-        this.socket.on('typing', (data) => {
-            if (this.currentConversation && data.conversationId === this.currentConversation.id) {
-                this.showTypingIndicator(data.userId);
-            }
-        });
-
-        this.socket.on('stopTyping', (data) => {
-            if (this.currentConversation && data.conversationId === this.currentConversation.id) {
-                this.hideTypingIndicator(data.userId);
-            }
-        });
+        }
     }
 
     attemptReconnect() {
@@ -251,13 +262,19 @@ class ChatPopup {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao carregar conversas');
+                throw new Error(`Erro ao carregar conversas: ${response.status}`);
             }
 
             const conversations = await response.json();
+            if (!Array.isArray(conversations)) {
+                throw new Error('Resposta inválida da API');
+            }
+
             this.renderConversations(conversations);
         } catch (error) {
             console.error('Erro ao carregar conversas:', error);
+            this.showMessage('Erro ao carregar conversas. Tentando novamente...', 'error');
+            setTimeout(() => this.loadConversations(), 5000);
         }
     }
 

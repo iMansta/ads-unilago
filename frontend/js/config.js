@@ -1,3 +1,29 @@
+// Configurações da API
+const API_URL = 'http://localhost:3000/api';
+const SOCKET_URL = 'http://localhost:3000';
+
+// Configurações do Socket.IO
+const socketConfig = {
+    path: '/socket.io',
+    autoConnect: true,
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 20000,
+    transports: ['websocket', 'polling'],
+    forceNew: true,
+    query: {},
+    extraHeaders: {}
+};
+
+// Funções para acessar as configurações
+window.getApiUrl = () => API_URL;
+window.getSocketUrl = () => SOCKET_URL;
+window.config = {
+    socketConfig
+};
+
 const config = {
     // URL de produção
     apiUrl: 'https://ads-unilago.onrender.com/api',
@@ -5,14 +31,6 @@ const config = {
     devApiUrl: 'http://localhost:3000/api',
     // Ambiente atual
     environment: window.location.hostname === 'localhost' ? 'development' : 'production',
-    // Configurações do Socket.IO
-    socketConfig: {
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-        timeout: 20000,
-        transports: ['websocket', 'polling']
-    },
     // Configurações de retry
     retryConfig: {
         maxRetries: 3,
