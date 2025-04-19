@@ -17,13 +17,14 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "express-rate-limit": "^6.7.0",
+    "express-rate-limit": "^6.11.2",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.3",
     "multer": "^1.4.5-lts.1",
     "rate-limit-redis": "^4.0.1",
     "redis": "^4.6.6",
+    "socket.io": "^4.6.1",
     "winston": "^3.8.2"
   },
   "devDependencies": {
@@ -45,4 +46,4 @@
     "url": "https://github.com/iMansta/ads-unilago/issues"
   },
   "homepage": "https://github.com/iMansta/ads-unilago#readme"
-} 
+}

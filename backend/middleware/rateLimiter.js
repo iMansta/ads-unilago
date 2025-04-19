@@ -42,7 +42,19 @@ const apiLimiter = rateLimit({
     legacyHeaders: false
 });
 
+// Configuração do rate limiter
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // limite de 100 requisições por IP
+    message: {
+        error: 'Muitas requisições deste IP. Por favor, tente novamente mais tarde.'
+    },
+    standardHeaders: true, // Retorna informações de limite no header
+    legacyHeaders: false, // Desabilita headers legados
+});
+
 module.exports = {
     authLimiter,
-    apiLimiter
+    apiLimiter,
+    limiter
 }; 
