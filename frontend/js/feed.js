@@ -1,5 +1,4 @@
 // Configurações
-const API_URL = window.getApiUrl();
 let token = localStorage.getItem('token');
 
 // Elementos do DOM
@@ -23,7 +22,7 @@ function showMessage(message, type = 'error') {
 // Carregar posts
 async function loadPosts() {
     try {
-        const response = await fetch(`${API_URL}/posts`, {
+        const response = await fetch(`${window.getApiUrl()}/posts`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -109,7 +108,7 @@ async function toggleLike(button) {
     const postId = postElement.dataset.postId;
     
     try {
-        const response = await fetch(`${API_URL}/posts/${postId}/like`, {
+        const response = await fetch(`${window.getApiUrl()}/posts/${postId}/like`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -149,7 +148,7 @@ function toggleComments(button) {
 // Carregar comentários
 async function loadComments(postId, commentsList) {
     try {
-        const response = await fetch(`${API_URL}/posts/${postId}/comments`, {
+        const response = await fetch(`${window.getApiUrl()}/posts/${postId}/comments`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -189,7 +188,7 @@ function renderComments(comments, commentsList) {
 // Adicionar comentário
 async function addComment(postId, content) {
     try {
-        const response = await fetch(`${API_URL}/posts/${postId}/comments`, {
+        const response = await fetch(`${window.getApiUrl()}/posts/${postId}/comments`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -260,7 +259,7 @@ function togglePostOptions(button) {
 // Carregar membros online
 async function loadOnlineMembers() {
     try {
-        const response = await fetch(`${API_URL}/users/online`, {
+        const response = await fetch(`${window.getApiUrl()}/users/online`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -314,7 +313,7 @@ if (createPostForm) {
         if (!postContent.value.trim()) return;
 
         try {
-            const response = await fetch(`${API_URL}/posts`, {
+            const response = await fetch(`${window.getApiUrl()}/posts`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

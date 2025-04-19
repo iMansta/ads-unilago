@@ -20,9 +20,7 @@ const socketConfig = {
 // Funções para acessar as configurações
 window.getApiUrl = () => API_URL;
 window.getSocketUrl = () => SOCKET_URL;
-window.config = {
-    socketConfig
-};
+window.getSocketConfig = () => socketConfig;
 
 const config = {
     // URL de produção
@@ -36,7 +34,9 @@ const config = {
         maxRetries: 3,
         retryDelay: 1000,
         retryStatusCodes: [408, 500, 502, 503, 504]
-    }
+    },
+    // Configurações do Socket.IO
+    socketConfig: socketConfig
 };
 
 // Validação das configurações
@@ -44,8 +44,8 @@ function validateConfig() {
     if (!config.apiUrl || !config.devApiUrl) {
         throw new Error('URLs da API não configuradas');
     }
-    if (!config.socketConfig) {
-        throw new Error('Configurações do Socket.IO não definidas');
+    if (!config.socketConfig || !config.socketConfig.path) {
+        throw new Error('Configurações do Socket.IO não definidas corretamente');
     }
     return true;
 }

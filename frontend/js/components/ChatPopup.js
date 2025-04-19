@@ -19,7 +19,8 @@ class ChatPopup {
         }
 
         // Verificar se o elemento popup existe
-        if (!document.getElementById('chat-popup')) {
+        this.popupElement = document.getElementById('chat-popup');
+        if (!this.popupElement) {
             console.warn('Elemento chat-popup não encontrado no DOM. Aguardando carregamento...');
             setTimeout(() => this.initialize(), 1000);
             return;
@@ -504,6 +505,21 @@ class ChatPopup {
         } catch (error) {
             console.error('Erro ao atualizar status:', error);
         }
+    }
+
+    showMessage(message, type = 'error') {
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${type}`;
+        messageElement.textContent = message;
+        
+        // Adicionar ao DOM
+        const container = document.querySelector('.chat-container') || document.body;
+        container.appendChild(messageElement);
+        
+        // Remover após 3 segundos
+        setTimeout(() => {
+            messageElement.remove();
+        }, 3000);
     }
 }
 
