@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/feed.css">
     <link rel="stylesheet" href="styles/chat-popup.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 </head>
 <body>
     <div class="feed-container">
@@ -98,6 +99,65 @@
                 </div>
             </div>
         </aside>
+    </div>
+
+    <!-- Chat Popup -->
+    <div id="chat-popup" class="chat-popup">
+        <div class="chat-header">
+            <h3>Chat</h3>
+            <div class="chat-actions">
+                <button id="chat-popup-minimize" class="action-btn">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button id="chat-popup-close" class="action-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="chat-content">
+            <div id="chat-popup-list" class="conversation-list">
+                <!-- Lista de conversas será carregada aqui -->
+            </div>
+            <div id="chat-popup-window" class="chat-window" style="display: none;">
+                <div class="chat-window-header">
+                    <button id="chat-back" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <img id="chat-avatar" src="/assets/default-avatar.svg" alt="Avatar" class="chat-avatar">
+                    <div class="chat-info">
+                        <div id="chat-name" class="chat-name">Nome do Usuário</div>
+                        <div id="chat-status" class="chat-status">Online</div>
+                    </div>
+                </div>
+                <div class="chat-messages">
+                    <!-- Mensagens serão carregadas aqui -->
+                </div>
+                <div class="chat-input">
+                    <textarea id="chat-message-input" placeholder="Digite sua mensagem..."></textarea>
+                    <button id="chat-send" class="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Nova Conversa -->
+    <div id="new-conversation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nova Conversa</h3>
+                <button id="modal-close" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="user-search" placeholder="Pesquisar usuários...">
+                <div class="user-list">
+                    <!-- Resultados da pesquisa serão carregados aqui -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/config.js"></script>
