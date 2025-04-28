@@ -56,12 +56,18 @@ async function testApiConnection() {
     while (retryCount < config.retryConfig.maxRetries) {
         try {
             console.log(`Testando conexão com a API (tentativa ${retryCount + 1})...`);
+            console.log('URL da API:', `${config.apiUrl}/test`);
+            console.log('Headers:', getDefaultHeaders());
+            
             const response = await fetch(`${config.apiUrl}/test`, {
                 method: 'GET',
                 headers: getDefaultHeaders(),
                 mode: 'cors',
                 credentials: 'include'
             });
+            
+            console.log('Status da resposta:', response.status);
+            console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()));
             
             if (!response.ok) {
                 throw new Error(`Erro na API: ${response.status} ${response.statusText}`);

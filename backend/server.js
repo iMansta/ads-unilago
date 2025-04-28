@@ -12,7 +12,7 @@ const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 
-// Configuração do CORS
+// Configuração do CORS - Deve ser o primeiro middleware
 app.use(
     cors({
         origin: 'https://atletica-ads-unilago-frontend.onrender.com',
@@ -81,7 +81,19 @@ app.get('/health', (req, res) => {
 
 // Rota de teste
 app.get('/api/test', (req, res) => {
-    res.json({ message: 'API funcionando!' });
+    console.log('Test route accessed');
+    console.log('Request headers:', req.headers);
+    
+    res.json({
+        message: 'API is working!',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV,
+        cors: {
+            origin: req.headers.origin || 'No origin',
+            method: req.method,
+            headers: req.headers
+        }
+    });
 });
 
 // Tratamento de erros
