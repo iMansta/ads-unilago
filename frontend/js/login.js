@@ -1,11 +1,18 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const loginForm = document.getElementById('loginForm');
-    // Usar a URL da API diretamente para evitar problemas de cache
-    const API_URL = 'https://ads-unilago.onrender.com/api';
+    const API_URL = window.config.apiUrl;
 
     // Testar a conexão com a API
     try {
-        const response = await fetch(`${API_URL}/test`);
+        const response = await fetch(`${API_URL}/test`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            mode: 'cors',
+            credentials: 'include'
+        });
         const data = await response.json();
         console.log('Resposta da API:', data);
         console.log('Conexão com a API estabelecida com sucesso!');
@@ -26,8 +33,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
+                mode: 'cors',
+                credentials: 'include',
                 body: JSON.stringify({ email, password })
             });
 

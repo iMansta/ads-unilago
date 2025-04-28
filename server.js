@@ -22,6 +22,34 @@ mongoose.set('strictQuery', false);
 const app = express();
 
 // Configuração CORS
+const corsOptions = {
+    origin: function(origin, callback) {
+        const allowedOrigins = ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+};
+
+// Aplicar CORS antes de qualquer outro middleware
+app.use(cors(corsOptions));
+
+// Middleware para log de requisições
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    console.log('Headers:', req.headers);
+    next();
+});
+
+// Middleware para tratamento de CORS
 app.use((req, res, next) => {
     const allowedOrigins = ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'];
     const origin = req.headers.origin;
@@ -41,48 +69,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware para log de requisições
-app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-    console.log('Headers:', req.headers);
-    next();
-});
-
-// Configuração CORS com cors middleware
-app.use(cors({
-    origin: function(origin, callback) {
-        const allowedOrigins = ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'];
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-    exposedHeaders: ['Content-Range', 'X-Content-Range'],
-    credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-}));
-
+// Middleware para parsing de JSON e URL-encoded
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Servir arquivos estáticos apenas em desenvolvimento
-if (process.env.NODE_ENV !== 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend')));
-}
-
-// Headers de segurança
-app.use((req, res, next) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-    res.setHeader('Content-Security-Policy', "default-src 'self'");
-    next();
-});
 
 // Middleware de segurança
 app.use(securityLogging);
