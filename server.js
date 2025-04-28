@@ -140,9 +140,15 @@ const auth = async (req, res, next) => {
     }
 };
 
-// Test route
+// Rota de teste
 app.get('/api/test', (req, res) => {
-    res.json({ 
+    console.log('Test route accessed');
+    res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
+    res.json({
         message: 'API is working!',
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV,
