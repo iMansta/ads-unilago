@@ -9,6 +9,9 @@ const path = require('path');
 const { authLimiter, apiLimiter } = require('./middleware/rateLimiter');
 const securityLogging = require('./middleware/securityLogger');
 const routes = require('./routes');
+const User = require('./models/User');
+const Post = require('./models/Post');
+const Group = require('./models/group');
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -96,44 +99,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-// Models
-const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    profilePicture: { type: String, default: 'default-avatar.png' },
-    course: { type: String, required: true },
-    semester: { type: Number, required: true },
-    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    createdAt: { type: Date, default: Date.now }
-});
-
-const postSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    content: { type: String, required: true },
-    image: { type: String },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    comments: [{
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        content: String,
-        createdAt: { type: Date, default: Date.now }
-    }],
-    createdAt: { type: Date, default: Date.now }
-});
-
-const groupSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    description: { type: String },
-    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-    createdAt: { type: Date, default: Date.now }
-});
-
-const User = mongoose.model('User', userSchema);
-const Post = mongoose.model('Post', postSchema);
-const Group = mongoose.model('Group', groupSchema);
 
 // Authentication Middleware
 const auth = async (req, res, next) => {
