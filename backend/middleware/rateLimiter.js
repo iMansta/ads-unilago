@@ -10,33 +10,23 @@ const redisClient = redis.createClient({
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
 redisClient.connect();
 
-// Limite para autenticação (mais restritivo)
+// Rate limiter para rotas de autenticação
 const authLimiter = rateLimit({
-    store: new RedisStore({
-        client: redisClient,
-        prefix: 'auth:'
-    }),
     windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 5, // 5 tentativas por IP
+    max: 5, // 5 tentativas
     message: {
-        success: false,
-        message: 'Muitas tentativas de login. Por favor, tente novamente mais tarde.'
+        error: 'Muitas tentativas de login. Por favor, tente novamente em 15 minutos.'
     },
     standardHeaders: true,
     legacyHeaders: false
 });
 
-// Limite para API (menos restritivo)
+// Rate limiter para outras rotas da API
 const apiLimiter = rateLimit({
-    store: new RedisStore({
-        client: redisClient,
-        prefix: 'api:'
-    }),
-    windowMs: 60 * 60 * 1000, // 1 hora
-    max: 100, // 100 requisições por IP
+    windowMs: 60 * 1000, // 1 minuto
+    max: 100, // 100 requisições por minuto
     message: {
-        success: false,
-        message: 'Muitas requisições. Por favor, tente novamente mais tarde.'
+        error: 'Muitas requisições. Por favor, tente novamente em 1 minuto.'
     },
     standardHeaders: true,
     legacyHeaders: false
