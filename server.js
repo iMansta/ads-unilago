@@ -23,6 +23,13 @@ const app = express();
 
 // Configuração CORS
 app.use((req, res, next) => {
+    console.log('CORS middleware - Request:', {
+        method: req.method,
+        url: req.url,
+        origin: req.headers.origin,
+        headers: req.headers
+    });
+    
     res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
@@ -32,6 +39,14 @@ app.use((req, res, next) => {
         console.log('Handling OPTIONS request');
         return res.sendStatus(204);
     }
+    
+    console.log('CORS headers set:', {
+        'Access-Control-Allow-Origin': res.getHeader('Access-Control-Allow-Origin'),
+        'Access-Control-Allow-Methods': res.getHeader('Access-Control-Allow-Methods'),
+        'Access-Control-Allow-Headers': res.getHeader('Access-Control-Allow-Headers'),
+        'Access-Control-Allow-Credentials': res.getHeader('Access-Control-Allow-Credentials')
+    });
+    
     next();
 });
 
