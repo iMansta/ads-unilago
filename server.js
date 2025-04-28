@@ -135,11 +135,6 @@ app.get('/api/test', (req, res) => {
     console.log('Test route accessed');
     console.log('Request headers:', req.headers);
     
-    res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    
     res.json({
         message: 'API is working!',
         timestamp: new Date().toISOString(),
@@ -193,11 +188,6 @@ app.post('/api/login', async (req, res) => {
     console.log('Login route accessed');
     console.log('Request headers:', req.headers);
     console.log('Request body:', req.body);
-    
-    res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-    res.header('Access-Control-Allow-Credentials', 'true');
     
     try {
         const { email, password } = req.body;
