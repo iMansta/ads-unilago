@@ -1,11 +1,11 @@
 // Configurações da API
 const API_URL = window.location.hostname === 'localhost' 
     ? 'http://localhost:3000/api'
-    : 'https://ads-unilago.onrender.com/api';
+    : 'https://atletica-ads-unilago.onrender.com/api';
 
 const SOCKET_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:3000'
-    : 'https://ads-unilago.onrender.com';
+    : 'https://atletica-ads-unilago.onrender.com';
 
 // Configurações do Socket.IO
 const socketConfig = {
