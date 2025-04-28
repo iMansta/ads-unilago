@@ -1,6 +1,11 @@
 // Configurações da API
-const API_URL = 'http://localhost:3000/api';
-const SOCKET_URL = 'http://localhost:3000';
+const API_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000/api'
+    : 'https://ads-unilago.onrender.com/api';
+
+const SOCKET_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000'
+    : 'https://ads-unilago.onrender.com';
 
 // Configurações do Socket.IO
 const socketConfig = {
@@ -24,7 +29,7 @@ window.getSocketConfig = () => socketConfig;
 
 const config = {
     // URL de produção
-    apiUrl: 'https://ads-unilago.onrender.com/api',
+    apiUrl: API_URL,
     // URL de desenvolvimento
     devApiUrl: 'http://localhost:3000/api',
     // Ambiente atual
@@ -118,8 +123,7 @@ function getApiUrl() {
 
 // Função para obter a URL do Socket.IO
 function getSocketUrl() {
-    const apiUrl = getApiUrl();
-    return apiUrl.replace('/api', '');
+    return SOCKET_URL;
 }
 
 // Função para obter headers padrão

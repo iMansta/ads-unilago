@@ -22,6 +22,7 @@ class ChatPopup {
         this.popupElement = document.getElementById('chat-popup');
         if (!this.popupElement) {
             console.warn('Elemento chat-popup não encontrado no DOM. Aguardando carregamento...');
+            // Tentar inicializar novamente após um curto período
             setTimeout(() => this.initialize(), 1000);
             return;
         }
@@ -30,45 +31,55 @@ class ChatPopup {
     }
 
     initialize() {
-        // Configurações
-        this.API_URL = window.getApiUrl();
-        this.SOCKET_URL = window.getSocketUrl();
-        this.currentConversation = null;
-        this.socket = null;
-        this.reconnectAttempts = 0;
-        this.maxReconnectAttempts = 5;
+        try {
+            // Configurações
+            this.API_URL = window.getApiUrl();
+            this.SOCKET_URL = window.getSocketUrl();
+            this.currentConversation = null;
+            this.socket = null;
+            this.reconnectAttempts = 0;
+            this.maxReconnectAttempts = 5;
 
-        // Elementos do DOM
-        this.initializeElements();
-        
-        // Inicializar eventos e conexão
-        this.initializeEvents();
-        this.initializeSocket();
-        this.loadConversations();
-        this.updateUserStatus('online');
+            // Elementos do DOM
+            this.initializeElements();
+            
+            // Inicializar eventos e conexão
+            this.initializeEvents();
+            this.initializeSocket();
+            this.loadConversations();
+            this.updateUserStatus('online');
+        } catch (error) {
+            console.error('Erro ao inicializar ChatPopup:', error);
+            this.showMessage('Erro ao inicializar o chat. Por favor, recarregue a página.', 'error');
+        }
     }
 
     initializeElements() {
-        this.popup = document.getElementById('chat-popup');
-        this.minimizeBtn = document.getElementById('chat-popup-minimize');
-        this.closeBtn = document.getElementById('chat-popup-close');
-        this.conversationList = document.getElementById('chat-popup-list');
-        this.chatWindow = document.getElementById('chat-popup-window');
-        this.chatBackBtn = document.getElementById('chat-back');
-        this.chatAvatar = document.getElementById('chat-avatar');
-        this.chatName = document.getElementById('chat-name');
-        this.chatStatus = document.getElementById('chat-status');
-        this.chatMessages = document.querySelector('.chat-messages');
-        this.messageInput = document.getElementById('chat-message-input');
-        this.sendBtn = document.getElementById('chat-send');
-        this.newConversationBtn = document.getElementById('new-conversation-btn');
-        this.newConversationModal = document.getElementById('new-conversation-modal');
-        this.userSearch = document.getElementById('user-search');
-        this.userList = document.querySelector('.user-list');
-        this.modalCloseBtn = document.getElementById('modal-close');
+        try {
+            this.popup = document.getElementById('chat-popup');
+            this.minimizeBtn = document.getElementById('chat-popup-minimize');
+            this.closeBtn = document.getElementById('chat-popup-close');
+            this.conversationList = document.getElementById('chat-popup-list');
+            this.chatWindow = document.getElementById('chat-popup-window');
+            this.chatBackBtn = document.getElementById('chat-back');
+            this.chatAvatar = document.getElementById('chat-avatar');
+            this.chatName = document.getElementById('chat-name');
+            this.chatStatus = document.getElementById('chat-status');
+            this.chatMessages = document.querySelector('.chat-messages');
+            this.messageInput = document.getElementById('chat-message-input');
+            this.sendBtn = document.getElementById('chat-send');
+            this.newConversationBtn = document.getElementById('new-conversation-btn');
+            this.newConversationModal = document.getElementById('new-conversation-modal');
+            this.userSearch = document.getElementById('user-search');
+            this.userList = document.querySelector('.user-list');
+            this.modalCloseBtn = document.getElementById('modal-close');
 
-        // Verificar se todos os elementos foram encontrados
-        this.validateElements();
+            // Verificar se todos os elementos foram encontrados
+            this.validateElements();
+        } catch (error) {
+            console.error('Erro ao inicializar elementos do DOM:', error);
+            throw new Error('Elementos do DOM não encontrados');
+        }
     }
 
     validateElements() {
@@ -80,10 +91,9 @@ class ChatPopup {
             'userList', 'modalCloseBtn'
         ];
 
-        for (const element of requiredElements) {
-            if (!this[element]) {
-                throw new Error(`Elemento ${element} não encontrado no DOM`);
-            }
+        const missingElements = requiredElements.filter(element => !this[element]);
+        if (missingElements.length > 0) {
+            throw new Error(`Elementos não encontrados: ${missingElements.join(', ')}`);
         }
     }
 
@@ -199,34 +209,29 @@ class ChatPopup {
                 this.attemptReconnect();
             });
 
-            this.socket.on('connect_error', (error) => {
+            this.socket.on('error', (error) => {
                 console.error('Erro de conexão com o servidor de chat:', error);
-                this.updateConnectionStatus(false);
-                this.attemptReconnect();
+                this.showMessage('Erro de conexão com o servidor de chat', 'error');
             });
 
-            this.socket.on('newMessage', (message) => {
-                if (this.currentConversation && message.conversationId === this.currentConversation.id) {
-                    this.appendMessage(message);
-                } else {
-                    this.updateConversationList();
-                }
+            this.socket.on('message', (message) => {
+                this.appendMessage(message);
             });
 
             this.socket.on('typing', (data) => {
-                if (this.currentConversation && data.conversationId === this.currentConversation.id) {
+                if (data.userId !== this.userId) {
                     this.showTypingIndicator(data.userId);
                 }
             });
 
             this.socket.on('stopTyping', (data) => {
-                if (this.currentConversation && data.conversationId === this.currentConversation.id) {
+                if (data.userId !== this.userId) {
                     this.hideTypingIndicator(data.userId);
                 }
             });
         } catch (error) {
             console.error('Erro ao inicializar Socket.IO:', error);
-            this.attemptReconnect();
+            this.showMessage('Erro ao conectar com o servidor de chat', 'error');
         }
     }
 
@@ -275,19 +280,14 @@ class ChatPopup {
             });
 
             if (!response.ok) {
-                throw new Error(`Erro ao carregar conversas: ${response.status}`);
+                throw new Error(`Erro ao carregar conversas: ${response.status} ${response.statusText}`);
             }
 
             const conversations = await response.json();
-            if (!Array.isArray(conversations)) {
-                throw new Error('Resposta inválida da API');
-            }
-
             this.renderConversations(conversations);
         } catch (error) {
             console.error('Erro ao carregar conversas:', error);
-            this.showMessage('Erro ao carregar conversas. Tentando novamente...', 'error');
-            setTimeout(() => this.loadConversations(), 5000);
+            this.showMessage('Erro ao carregar conversas', 'error');
         }
     }
 
@@ -491,16 +491,16 @@ class ChatPopup {
     async updateUserStatus(status) {
         try {
             const response = await fetch(`${this.API_URL}/users/status`, {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${this.token}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.token}`
                 },
                 body: JSON.stringify({ status })
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao atualizar status');
+                throw new Error(`Erro ao atualizar status: ${response.status} ${response.statusText}`);
             }
         } catch (error) {
             console.error('Erro ao atualizar status:', error);
@@ -509,17 +509,10 @@ class ChatPopup {
 
     showMessage(message, type = 'error') {
         const messageElement = document.createElement('div');
-        messageElement.className = `message ${type}`;
+        messageElement.className = `chat-message ${type}`;
         messageElement.textContent = message;
-        
-        // Adicionar ao DOM
-        const container = document.querySelector('.chat-container') || document.body;
-        container.appendChild(messageElement);
-        
-        // Remover após 3 segundos
-        setTimeout(() => {
-            messageElement.remove();
-        }, 3000);
+        this.chatMessages.appendChild(messageElement);
+        this.scrollToBottom();
     }
 }
 
