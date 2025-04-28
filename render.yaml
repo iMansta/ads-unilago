@@ -3,7 +3,7 @@ services:
     name: atletica-ads-unilago
     env: node
     buildCommand: npm install
-    startCommand: node server.js
+    startCommand: node backend/server.js
     envVars:
       - key: NODE_ENV
         value: production

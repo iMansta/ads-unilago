@@ -2,10 +2,10 @@
   "name": "unilago",
   "version": "1.0.0",
   "description": "Rede social acadêmica",
-  "main": "server.js",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
     "test": "jest",
     "security-check": "node backend/scripts/check-vulnerabilities.js",
     "audit-fix": "npm audit fix",
