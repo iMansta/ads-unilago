@@ -219,28 +219,74 @@ app.post('/api/register', async (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
+    console.log('Login route accessed');
+    console.log('Request headers:', req.headers);
+    console.log('Request body:', req.body);
+    
+    const allowedOrigins = ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'];
+    const origin = req.headers.origin;
+    
+    if (allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
+    
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
         
+        // Verificar se o usuário existe
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Email não encontrado' });
+            return res.status(400).json({
+                success: false,
+                message: 'Credenciais inválidas'
+            });
         }
-
+        
+        // Verificar senha
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Senha incorreta' });
+            return res.status(400).json({
+                success: false,
+                message: 'Credenciais inválidas'
+            });
         }
-
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET || 'your-secret-key',
-            { expiresIn: '24h' }
+        
+        // Criar token JWT
+        const payload = {
+            user: {
+                id: user.id
+            }
+        };
+        
+        jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' },
+            (err, token) => {
+                if (err) throw err;
+                res.json({
+                    success: true,
+                    token,
+                    user: {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        course: user.course,
+                        registration: user.registration
+                    }
+                });
+            }
         );
-
-        res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao fazer login' });
+    } catch (err) {
+        console.error('Erro no login:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Erro ao fazer login'
+        });
     }
 });
 
