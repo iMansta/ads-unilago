@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const { authLimiter, apiLimiter } = require('./middleware/rateLimiter');
 const securityLogging = require('./middleware/securityLogger');
-const userRoutes = require('./routes/userRoutes');
+const routes = require('./routes');
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -303,7 +303,7 @@ app.post('/api/friends/add/:id', auth, async (req, res) => {
 });
 
 // Rotas
-app.use('/api/users', userRoutes);
+app.use('/api/users', routes.userRoutes);
 
 // Rota para servir o frontend
 app.get('/', (req, res) => {
