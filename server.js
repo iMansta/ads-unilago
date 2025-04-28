@@ -21,9 +21,9 @@ mongoose.set('strictQuery', false);
 
 const app = express();
 
-// Middleware
+// Configuração CORS
 app.use(cors({
-    origin: true, // Permite todas as origens em desenvolvimento
+    origin: 'https://atletica-ads-unilago-frontend.onrender.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
@@ -32,13 +32,22 @@ app.use(cors({
     optionsSuccessStatus: 204
 }));
 
-// Adicionar headers CORS manualmente para garantir
+// Middleware para log de requisições
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    console.log('Headers:', req.headers);
+    next();
+});
+
+// Middleware para tratamento de CORS
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
     res.header('Access-Control-Allow-Credentials', 'true');
+    
     if (req.method === 'OPTIONS') {
+        console.log('Handling OPTIONS request');
         return res.sendStatus(204);
     }
     next();
