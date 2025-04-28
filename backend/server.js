@@ -15,9 +15,9 @@ const server = http.createServer(app);
 // Configuração do CORS
 app.use(
     cors({
-        origin: '*', // Permitir todas as origens
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        origin: 'https://atletica-ads-unilago-frontend.onrender.com',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
         credentials: true,
     })
 );
@@ -46,7 +46,7 @@ app.use(updateLastActive);
 // Configuração do Socket.IO
 const io = socketIo(server, {
     cors: {
-        origin: '*',
+        origin: 'https://atletica-ads-unilago-frontend.onrender.com',
         methods: ['GET', 'POST'],
         credentials: true
     },

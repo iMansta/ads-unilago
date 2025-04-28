@@ -1,15 +1,12 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const loginForm = document.getElementById('loginForm');
-    const API_URL = window.config.apiUrl;
+    const API_URL = window.getApiUrl();
 
     // Testar a conexão com a API
     try {
         const response = await fetch(`${API_URL}/test`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
+            headers: window.getDefaultHeaders(),
             mode: 'cors',
             credentials: 'include'
         });
