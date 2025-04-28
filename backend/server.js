@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const routes = require('./routes');
 const updateLastActive = require('./middleware/updateLastActive');
-const { authLimiter, apiLimiter } = require('./rateLimiter');
+const rateLimiter = require('./rateLimiter');
 require('dotenv').config();
 const path = require('path');
 const http = require('http');
@@ -26,8 +26,8 @@ app.use(
 app.use(express.json());
 
 // Middleware para rate limiting
-app.use('/api/auth', authLimiter);
-app.use('/api', apiLimiter);
+app.use('/api/auth', rateLimiter.authLimiter);
+app.use('/api', rateLimiter.apiLimiter);
 
 // Middleware para servir arquivos estáticos
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
