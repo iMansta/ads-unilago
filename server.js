@@ -23,14 +23,7 @@ const app = express();
 
 // Configuração CORS
 const corsOptions = {
-    origin: function(origin, callback) {
-        const allowedOrigins = ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'];
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: 'https://atletica-ads-unilago-frontend.onrender.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
@@ -46,26 +39,6 @@ app.use(cors(corsOptions));
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     console.log('Headers:', req.headers);
-    next();
-});
-
-// Middleware para tratamento de CORS
-app.use((req, res, next) => {
-    const allowedOrigins = ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'];
-    const origin = req.headers.origin;
-    
-    if (allowedOrigins.includes(origin)) {
-        res.header('Access-Control-Allow-Origin', origin);
-    }
-    
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    
-    if (req.method === 'OPTIONS') {
-        console.log('Handling OPTIONS request');
-        return res.sendStatus(204);
-    }
     next();
 });
 
@@ -147,13 +120,7 @@ app.get('/api/test', (req, res) => {
     console.log('Test route accessed');
     console.log('Request headers:', req.headers);
     
-    const allowedOrigins = ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'];
-    const origin = req.headers.origin;
-    
-    if (allowedOrigins.includes(origin)) {
-        res.header('Access-Control-Allow-Origin', origin);
-    }
-    
+    res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -163,7 +130,7 @@ app.get('/api/test', (req, res) => {
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV,
         cors: {
-            origin: origin || 'No origin',
+            origin: req.headers.origin || 'No origin',
             method: req.method,
             headers: req.headers
         }
