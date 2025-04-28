@@ -23,13 +23,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://atletica-ads-unilago.onrender.com', 'https://atletica-ads-unilago-frontend.onrender.com', 'https://ads-unilago.vercel.app']
-        : 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: ['https://atletica-ads-unilago-frontend.onrender.com', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-    maxAge: 86400 // 24 horas
+    credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
