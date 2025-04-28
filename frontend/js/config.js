@@ -77,7 +77,9 @@ async function testApiConnection() {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
+                },
+                mode: 'cors',
+                credentials: 'include'
             });
             
             console.log('Status da resposta:', response.status);
