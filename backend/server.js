@@ -70,6 +70,15 @@ io.on('connection', (socket) => {
 // Rotas
 app.use('/api', routes);
 
+// Rota de health check
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'UP',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+    });
+});
+
 // Rota de teste
 app.get('/api/test', (req, res) => {
     res.json({ message: 'API funcionando!' });

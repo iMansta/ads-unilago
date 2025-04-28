@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Atlética ADS Unilago</title>
+    <link rel="stylesheet" href="styles/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/assets/atletica-logo.svg" alt="Logo Atlética" class="logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/feed.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Feed</span>
+                </a>
+                <a href="/friends.html" class="nav-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Amigos</span>
+                </a>
+                <a href="/groups.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+                <a href="/events.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Eventos</span>
+                </a>
+                <a href="/profile.html" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Perfil</span>
+                </a>
+                <a href="/chat.html" class="nav-item active">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="chat-container">
+                <!-- Lista de Conversas -->
+                <div class="conversations-list">
+                    <div class="chat-header">
+                        <h2>Conversas</h2>
+                        <button class="new-chat-btn" id="new-chat-btn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="chat-list" class="chat-list">
+                        <!-- Conversas serão carregadas aqui -->
+                    </div>
+                </div>
+
+                <!-- Janela de Chat -->
+                <div class="chat-window" id="chat-window">
+                    <div class="chat-header">
+                        <button class="back-btn" id="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="chat-info">
+                            <img src="/assets/default-avatar.svg" alt="Avatar" class="chat-avatar" id="chat-avatar">
+                            <div class="chat-details">
+                                <h3 id="chat-name">Selecione uma conversa</h3>
+                                <span id="chat-status">Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="messages-container" id="messages-container">
+                        <!-- Mensagens serão carregadas aqui -->
+                    </div>
+                    <div class="message-input-container">
+                        <textarea id="message-input" placeholder="Digite sua mensagem..."></textarea>
+                        <button id="send-message" class="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Nova Conversa -->
+    <div class="modal" id="new-chat-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nova Conversa</h2>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-container">
+                    <input type="text" id="user-search" placeholder="Buscar usuários...">
+                </div>
+                <div id="user-list" class="user-list">
+                    <!-- Lista de usuários será carregada aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/components/ChatList.js"></script>
+    <script src="js/components/ChatWindow.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html> 
