@@ -22,18 +22,18 @@ mongoose.set('strictQuery', false);
 const app = express();
 
 // Configuração CORS
-const corsOptions = {
-    origin: 'https://atletica-ads-unilago-frontend.onrender.com',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-    exposedHeaders: ['Content-Range', 'X-Content-Range'],
-    credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-};
-
-// Aplicar CORS antes de qualquer outro middleware
-app.use(cors(corsOptions));
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
+    if (req.method === 'OPTIONS') {
+        console.log('Handling OPTIONS request');
+        return res.sendStatus(204);
+    }
+    next();
+});
 
 // Middleware para log de requisições
 app.use((req, res, next) => {
@@ -120,11 +120,6 @@ app.get('/api/test', (req, res) => {
     console.log('Test route accessed');
     console.log('Request headers:', req.headers);
     
-    res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    
     res.json({
         message: 'API is working!',
         timestamp: new Date().toISOString(),
@@ -178,11 +173,6 @@ app.post('/api/login', async (req, res) => {
     console.log('Login route accessed');
     console.log('Request headers:', req.headers);
     console.log('Request body:', req.body);
-    
-    res.header('Access-Control-Allow-Origin', 'https://atletica-ads-unilago-frontend.onrender.com');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-    res.header('Access-Control-Allow-Credentials', 'true');
     
     try {
         const { email, password } = req.body;
