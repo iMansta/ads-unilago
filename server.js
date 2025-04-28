@@ -268,7 +268,7 @@ app.post('/api/friends/add/:id', auth, async (req, res) => {
 });
 
 // Rotas
-app.use('/api/users', routes.userRoutes);
+app.use('/api', routes);
 
 // Rota para servir o frontend
 app.get('/', (req, res) => {
