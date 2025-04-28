@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const routes = require('./routes');
 const updateLastActive = require('./middleware/updateLastActive');
-const { authLimiter, apiLimiter } = require('./config/rateLimiter');
+const { authLimiter, apiLimiter } = require('./rateLimiter');
 require('dotenv').config();
 const path = require('path');
 const http = require('http');
