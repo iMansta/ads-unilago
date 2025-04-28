@@ -4,6 +4,7 @@ const Post = require('../models/Post');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/upload');
+const postController = require('../controllers/postController');
 
 // Obter todos os posts
 router.get('/', async (req, res) => {
