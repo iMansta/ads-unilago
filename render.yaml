@@ -2,7 +2,7 @@ services:
   - type: web
     name: atletica-ads-unilago
     env: node
-    buildCommand: npm install
+    buildCommand: cd backend && npm install
     startCommand: cd backend && node server.js
     envVars:
       - key: NODE_ENV
